@@ -103,7 +103,35 @@ class playGame extends Phaser.Scene {
 
     // Player stuff
     player = this.add.sprite(1, 1, 'temp-santa');
+    player.mazeX = player.x;
+    player.mazeY = player.y;
   }
+
+  canMove(direction) {
+    switch (direction) {
+      case "N":
+        if (this.maze[player.mazeY - 1][player.mazeX] === 0) {
+          return true;
+        }
+        break;
+      case "E":
+        if (this.maze[player.mazeY][player.mazeX + 1] === 0) {
+          return true;
+        }
+        break;
+      case "S":
+        if (this.maze[player.mazeY + 1][player.mazeX] === 0) {
+          return true;
+        }
+        break;
+      case "W":
+        if (this.maze[player.mazeY][player.mazeX - 1] === 0) {
+          return true;
+        }
+        break;
+    }
+  }
+
   drawMaze(posX, posY) {
     this.mazeGraphics.fillStyle(0x000000);
     for (var i = 0; i < gameOptions.mazeHeight; i++) {
