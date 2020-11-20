@@ -1,11 +1,13 @@
 import Phaser from "phaser";
 import EasyStar from "easystarjs";
+import tempSanta from './assets/santa64.png';
 
 var game;
+var player;
 
 var gameOptions = {
-  mazeWidth: 21,
-  mazeHeight: 11,
+  mazeWidth: 31,
+  mazeHeight: 31,
   tileSize: 10
 }
 
@@ -26,6 +28,9 @@ window.onload = function () {
 class playGame extends Phaser.Scene {
   constructor() {
     super("PlayGame");
+  }
+  preload() {
+    this.load.image('temp-santa', tempSanta);
   }
   create() {
     this.mazeGraphics = this.add.graphics();
@@ -95,6 +100,9 @@ class playGame extends Phaser.Scene {
       this.drawPath(path);
     }.bind(this));
     easystar.calculate();
+
+    // Player stuff
+    player = this.add.sprite(1, 1, 'temp-santa');
   }
   drawMaze(posX, posY) {
     this.mazeGraphics.fillStyle(0x000000);
@@ -122,6 +130,9 @@ class playGame extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+  }
+  update() {
+    //player.anims.play('walk');
   }
 }
 
