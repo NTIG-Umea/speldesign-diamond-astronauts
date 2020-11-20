@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import EasyStar from "easystarjs";
 
 var game;
+var player;
 
 var gameOptions = {
   mazeWidth: 21,
@@ -14,6 +15,15 @@ window.onload = function () {
     type: Phaser.CANVAS,
     width: gameOptions.mazeWidth * gameOptions.tileSize,
     height: gameOptions.mazeHeight * gameOptions.tileSize,
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: {
+          y: 0
+        },
+        debug: false
+      }
+    },
     backgroundColor: 0xaaaaaa,
     scene: [playGame]
   };
@@ -26,6 +36,9 @@ window.onload = function () {
 class playGame extends Phaser.Scene {
   constructor() {
     super("PlayGame");
+  }
+  preload() {
+    this.load.multiatlas('temp-player-sprite', 'src/assets/temp-player-sprite.json', 'src/assets');
   }
   create() {
     this.mazeGraphics = this.add.graphics();
@@ -95,6 +108,21 @@ class playGame extends Phaser.Scene {
       this.drawPath(path);
     }.bind(this));
     easystar.calculate();
+
+    // Player stuff
+    player = this.physics.add.sprite(1, 1, 'temp-player-sprite');
+    player.setCollideWorldBounds(true);
+
+    this.anims.create({
+      key: 'walk',
+      frames: this.anims.generateFrameNames('temp-player-sprite', {
+        frames: ['19', '20', '6', '0', '11', '12', '13', '14', '4', '5', '7', '9', '1', '16', '3', '8', '17', '2', '18', '10', '15', '21']
+      }),
+      frameRate: 10,
+      repeat: -1
+    })
+    player.anims.play('walk', true);
+    player.rotation = -(Math.PI / 2);
   }
   drawMaze(posX, posY) {
     this.mazeGraphics.fillStyle(0x000000);
@@ -122,6 +150,9 @@ class playGame extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+  }
+  update() {
+    //player.anims.play('walk');
   }
 }
 
