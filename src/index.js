@@ -1,12 +1,13 @@
 import Phaser from "phaser";
 import EasyStar from "easystarjs";
+import tempSanta from './assets/santa64.png';
 
 var game;
 var player;
 
 var gameOptions = {
-  mazeWidth: 21,
-  mazeHeight: 11,
+  mazeWidth: 31,
+  mazeHeight: 31,
   tileSize: 10
 }
 
@@ -15,15 +16,6 @@ window.onload = function () {
     type: Phaser.CANVAS,
     width: gameOptions.mazeWidth * gameOptions.tileSize,
     height: gameOptions.mazeHeight * gameOptions.tileSize,
-    physics: {
-      default: 'arcade',
-      arcade: {
-        gravity: {
-          y: 0
-        },
-        debug: false
-      }
-    },
     backgroundColor: 0xaaaaaa,
     scene: [playGame]
   };
@@ -38,7 +30,7 @@ class playGame extends Phaser.Scene {
     super("PlayGame");
   }
   preload() {
-    this.load.multiatlas('temp-player-sprite', 'src/assets/temp-player-sprite.json', 'src/assets');
+    this.load.image('temp-santa', tempSanta);
   }
   create() {
     this.mazeGraphics = this.add.graphics();
@@ -110,19 +102,7 @@ class playGame extends Phaser.Scene {
     easystar.calculate();
 
     // Player stuff
-    player = this.physics.add.sprite(1, 1, 'temp-player-sprite');
-    player.setCollideWorldBounds(true);
-
-    this.anims.create({
-      key: 'walk',
-      frames: this.anims.generateFrameNames('temp-player-sprite', {
-        frames: ['19', '20', '6', '0', '11', '12', '13', '14', '4', '5', '7', '9', '1', '16', '3', '8', '17', '2', '18', '10', '15', '21']
-      }),
-      frameRate: 10,
-      repeat: -1
-    })
-    player.anims.play('walk', true);
-    player.rotation = -(Math.PI / 2);
+    player = this.add.sprite(1, 1, 'temp-santa');
   }
   drawMaze(posX, posY) {
     this.mazeGraphics.fillStyle(0x000000);
