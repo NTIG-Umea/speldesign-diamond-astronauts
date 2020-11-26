@@ -8,7 +8,9 @@ var player;
 var gameOptions = {
   mazeWidth: 31,
   mazeHeight: 31,
-  tileSize: 10,
+  tileSize: 64,
+  playerStartingX: 1,
+  playerStartingY: 1,
 };
 
 window.onload = function () {
@@ -124,9 +126,19 @@ class playGame extends Phaser.Scene {
     easystar.calculate();
 
     // Player stuff
-    player = this.add.sprite(1, 1, 'temp-santa');
-    player.mazeX = player.x;
-    player.mazeY = player.y;
+    // centers the player on the current tile
+    let playerX =
+      gameOptions.playerStartingX * gameOptions.tileSize +
+      gameOptions.tileSize / 2;
+    let playerY =
+      gameOptions.playerStartingY * gameOptions.tileSize +
+      gameOptions.tileSize / 2;
+    player = this.add.sprite(playerX, playerY, 'temp-santa');
+
+    player.mazeX = gameOptions.playerStartingX;
+    player.mazeY = gameOptions.playerStartingY;
+
+    player.setPosition(playerX, playerY);
 
     // Movement keys
     this.input.keyboard.on('keydown', function (e) {
@@ -166,6 +178,13 @@ class playGame extends Phaser.Scene {
         player.mazeX -= 1;
         break;
     }
+    this.updatePlayerPosition();
+  }
+
+  updatePlayerPosition() {
+    let x = player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
+    let y = player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
+    player.setPosition(x, y);
   }
 
   drawMaze(posX, posY) {
