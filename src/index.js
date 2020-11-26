@@ -133,22 +133,39 @@ class playGame extends Phaser.Scene {
       switch (e.key) {
         case 'w':
         case 'ArrowUp':
-          console.log(canMove('N'));
+          if (canMove('N')) this.scene.movePlayer('N');
           break;
         case 'd':
         case 'ArrowRight':
-          console.log(canMove('E'));
+          if (canMove('E')) this.scene.movePlayer('E');
           break;
         case 's':
         case 'ArrowDown':
-          console.log(canMove('S'));
+          if (canMove('S')) this.scene.movePlayer('S');
           break;
         case 'a':
         case 'ArrowLeft':
-          console.log(canMove('W'));
+          if (canMove('W')) this.scene.movePlayer('W');
           break;
       }
     });
+  }
+
+  movePlayer(direction) {
+    switch (direction) {
+      case 'N':
+        player.mazeY -= 1;
+        break;
+      case 'E':
+        player.mazeX += 1;
+        break;
+      case 'S':
+        player.mazeY += 1;
+        break;
+      case 'W':
+        player.mazeX -= 1;
+        break;
+    }
   }
 
   drawMaze(posX, posY) {
