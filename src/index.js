@@ -4,6 +4,7 @@ import tempSanta from './assets/santa64.png';
 
 var game;
 var player;
+var score = 0;
 
 var gameOptions = {
   mazeWidth: 31,
@@ -11,6 +12,10 @@ var gameOptions = {
   tileSize: 64,
   playerStartingX: 1,
   playerStartingY: 1,
+  mazeStartingX: 1,
+  mazeStartingY: 1,
+  mazeEndX: 31 - 2, // this should read the value from gameOptions.mazeWidth
+  mazeEndY: 31 - 2,
 };
 
 window.onload = function () {
@@ -45,8 +50,8 @@ class playGame extends Phaser.Scene {
       }
     }
     console.log(this.maze);
-    var posY = 1;
-    var posX = 1;
+    var posY = gameOptions.mazeStartingX;
+    var posX = gameOptions.mazeStartingY;
     this.maze[posY][posX] = 0;
     moves.push(posX + posX * gameOptions.mazeWidth);
     while (moves.length) {
@@ -115,8 +120,8 @@ class playGame extends Phaser.Scene {
     easystar.setGrid(this.maze);
     easystar.setAcceptableTiles([0]);
     easystar.findPath(
-      gameOptions.mazeWidth - 2,
-      gameOptions.mazeHeight - 2,
+      gameOptions.mazeEndX,
+      gameOptions.mazeEndY,
       1,
       1,
       function (path) {
@@ -185,6 +190,14 @@ class playGame extends Phaser.Scene {
     let x = player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
     let y = player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
     player.setPosition(x, y);
+    if (
+      player.mazeX === gameOptions.mazeEndX &&
+      player.mazeY === gameOptions.mazeEndY
+    ) {
+      score++;
+      alert(`Your score was: ${score}`); // should use some Phaser implementation of this
+      this.scene.start('PlayGame');
+    }
   }
 
   drawMaze(posX, posY) {
