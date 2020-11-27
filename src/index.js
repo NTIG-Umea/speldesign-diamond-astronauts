@@ -41,13 +41,6 @@ class playGame extends Phaser.Scene {
   }
 
   create() {
-
-    this.cameras.main.setBounds(0, 0, 3392, 100);
-    this.physics.world.setBounds(0, 0, 3392, 240);
-
-    this.cameras.main.startFollow(ship, true, 0.08, 0.08);
-    this.cameras.main.setZoom(4);
-
     this.mazeGraphics = this.add.graphics();
     var moves = [];
     this.maze = [];
@@ -152,6 +145,11 @@ class playGame extends Phaser.Scene {
     player.mazeY = gameOptions.playerStartingY;
 
     player.setPosition(playerX, playerY);
+
+    // Camera stuff
+    this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
+    this.cameras.main.startFollow(player, true, 0.08, 0.08);
+    this.cameras.main.setZoom(4);
 
     // Movement keys
     this.input.keyboard.on('keydown', function (e) {
