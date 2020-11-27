@@ -4,6 +4,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
+  // fixes hot reload not working with WSL 2
+  watchOptions: {
+    poll: 1000
+  },
   mode: "development",
   devtool: "eval-source-map",
   module: {
