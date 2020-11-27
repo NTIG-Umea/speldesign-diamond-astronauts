@@ -32,7 +32,15 @@ class playGame extends Phaser.Scene {
   preload() {
     this.load.image('temp-santa', tempSanta);
   }
+
   create() {
+
+    this.cameras.main.setBounds(0, 0, 3392, 100);
+    this.physics.world.setBounds(0, 0, 3392, 240);
+
+    this.cameras.main.startFollow(ship, true, 0.08, 0.08);
+    this.cameras.main.setZoom(4);
+
     this.mazeGraphics = this.add.graphics();
     var moves = [];
     this.maze = [];
