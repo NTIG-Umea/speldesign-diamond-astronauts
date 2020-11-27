@@ -1,15 +1,22 @@
-import Phaser from "phaser";
-import EasyStar from "easystarjs";
+import Phaser from 'phaser';
+import EasyStar from 'easystarjs';
 import tempSanta from './assets/santa64.png';
 
 var game;
 var player;
+var score = 0;
 
 var gameOptions = {
   mazeWidth: 31,
   mazeHeight: 31,
-  tileSize: 10
-}
+  tileSize: 64,
+  playerStartingX: 1,
+  playerStartingY: 1,
+  mazeStartingX: 1,
+  mazeStartingY: 1,
+  mazeEndX: 31 - 2, // this should read the value from gameOptions.mazeWidth
+  mazeEndY: 31 - 2,
+};
 
 window.onload = function () {
   var gameConfig = {
@@ -17,17 +24,17 @@ window.onload = function () {
     width: gameOptions.mazeWidth * gameOptions.tileSize,
     height: gameOptions.mazeHeight * gameOptions.tileSize,
     backgroundColor: 0xaaaaaa,
-    scene: [playGame]
+    scene: [playGame],
   };
   game = new Phaser.Game(gameConfig);
-  window.focus()
+  window.focus();
   resize();
-  window.addEventListener("resize", resize, false);
-}
+  window.addEventListener('resize', resize, false);
+};
 
 class playGame extends Phaser.Scene {
   constructor() {
-    super("PlayGame");
+    super('PlayGame');
   }
   preload() {
     this.load.image('temp-santa', tempSanta);
@@ -51,43 +58,59 @@ class playGame extends Phaser.Scene {
       }
     }
     console.log(this.maze);
-    var posY = 1;
-    var posX = 1;
+    var posY = gameOptions.mazeStartingX;
+    var posX = gameOptions.mazeStartingY;
     this.maze[posY][posX] = 0;
     moves.push(posX + posX * gameOptions.mazeWidth);
     while (moves.length) {
-      var possibleDirections = "";
-      if (posY + 2 > 0 && posY + 2 < gameOptions.mazeHeight - 1 && this.maze[posY + 2][posX] == 1) {
-        possibleDirections += "S";
+      var possibleDirections = '';
+      if (
+        posY + 2 > 0 &&
+        posY + 2 < gameOptions.mazeHeight - 1 &&
+        this.maze[posY + 2][posX] == 1
+      ) {
+        possibleDirections += 'S';
       }
-      if (posY - 2 > 0 && posY - 2 < gameOptions.mazeHeight - 1 && this.maze[posY - 2][posX] == 1) {
-        possibleDirections += "N";
+      if (
+        posY - 2 > 0 &&
+        posY - 2 < gameOptions.mazeHeight - 1 &&
+        this.maze[posY - 2][posX] == 1
+      ) {
+        possibleDirections += 'N';
       }
-      if (posX - 2 > 0 && posX - 2 < gameOptions.mazeWidth - 1 && this.maze[posY][posX - 2] == 1) {
-        possibleDirections += "W";
+      if (
+        posX - 2 > 0 &&
+        posX - 2 < gameOptions.mazeWidth - 1 &&
+        this.maze[posY][posX - 2] == 1
+      ) {
+        possibleDirections += 'W';
       }
-      if (posX + 2 > 0 && posX + 2 < gameOptions.mazeWidth - 1 && this.maze[posY][posX + 2] == 1) {
-        possibleDirections += "E";
+      if (
+        posX + 2 > 0 &&
+        posX + 2 < gameOptions.mazeWidth - 1 &&
+        this.maze[posY][posX + 2] == 1
+      ) {
+        possibleDirections += 'E';
       }
       if (possibleDirections) {
         var move = Phaser.Math.Between(0, possibleDirections.length - 1);
         switch (possibleDirections[move]) {
-          case "N":
+          case 'N':
             this.maze[posY - 2][posX] = 0;
             this.maze[posY - 1][posX] = 0;
             posY -= 2;
             break;
-          case "S":
+          case 'S':
             this.maze[posY + 2][posX] = 0;
             this.maze[posY + 1][posX] = 0;
             posY += 2;
             break;
-          case "W":
+          case 'W':
             this.maze[posY][posX - 2] = 0;
             this.maze[posY][posX - 1] = 0;
             posX -= 2;
             break;
-          case "E":
+          case 'E':
             this.maze[posY][posX + 2] = 0;
             this.maze[posY][posX + 1] = 0;
             posX += 2;
@@ -104,39 +127,84 @@ class playGame extends Phaser.Scene {
     var easystar = new EasyStar.js();
     easystar.setGrid(this.maze);
     easystar.setAcceptableTiles([0]);
-    easystar.findPath(gameOptions.mazeWidth - 2, gameOptions.mazeHeight - 2, 1, 1, function (path) {
-      this.drawPath(path);
-    }.bind(this));
+    easystar.findPath(
+      gameOptions.mazeEndX,
+      gameOptions.mazeEndY,
+      1,
+      1,
+      function (path) {
+        this.drawPath(path);
+      }.bind(this)
+    );
     easystar.calculate();
 
     // Player stuff
-    player = this.add.sprite(1, 1, 'temp-santa');
-    player.mazeX = player.x;
-    player.mazeY = player.y;
+    // centers the player on the current tile
+    let playerX =
+      gameOptions.playerStartingX * gameOptions.tileSize +
+      gameOptions.tileSize / 2;
+    let playerY =
+      gameOptions.playerStartingY * gameOptions.tileSize +
+      gameOptions.tileSize / 2;
+    player = this.add.sprite(playerX, playerY, 'temp-santa');
+
+    player.mazeX = gameOptions.playerStartingX;
+    player.mazeY = gameOptions.playerStartingY;
+
+    player.setPosition(playerX, playerY);
+
+    // Movement keys
+    this.input.keyboard.on('keydown', function (e) {
+      switch (e.key) {
+        case 'w':
+        case 'ArrowUp':
+          if (canMove('N')) this.scene.movePlayer('N');
+          break;
+        case 'd':
+        case 'ArrowRight':
+          if (canMove('E')) this.scene.movePlayer('E');
+          break;
+        case 's':
+        case 'ArrowDown':
+          if (canMove('S')) this.scene.movePlayer('S');
+          break;
+        case 'a':
+        case 'ArrowLeft':
+          if (canMove('W')) this.scene.movePlayer('W');
+          break;
+      }
+    });
   }
 
-  canMove(direction) {
+  movePlayer(direction) {
     switch (direction) {
-      case "N":
-        if (this.maze[player.mazeY - 1][player.mazeX] === 0) {
-          return true;
-        }
+      case 'N':
+        player.mazeY -= 1;
         break;
-      case "E":
-        if (this.maze[player.mazeY][player.mazeX + 1] === 0) {
-          return true;
-        }
+      case 'E':
+        player.mazeX += 1;
         break;
-      case "S":
-        if (this.maze[player.mazeY + 1][player.mazeX] === 0) {
-          return true;
-        }
+      case 'S':
+        player.mazeY += 1;
         break;
-      case "W":
-        if (this.maze[player.mazeY][player.mazeX - 1] === 0) {
-          return true;
-        }
+      case 'W':
+        player.mazeX -= 1;
         break;
+    }
+    this.updatePlayerPosition();
+  }
+
+  updatePlayerPosition() {
+    let x = player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
+    let y = player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
+    player.setPosition(x, y);
+    if (
+      player.mazeX === gameOptions.mazeEndX &&
+      player.mazeY === gameOptions.mazeEndY
+    ) {
+      score++;
+      alert(`Your score was: ${score}`); // should use some Phaser implementation of this
+      this.scene.start('PlayGame');
     }
   }
 
@@ -145,7 +213,12 @@ class playGame extends Phaser.Scene {
     for (var i = 0; i < gameOptions.mazeHeight; i++) {
       for (var j = 0; j < gameOptions.mazeWidth; j++) {
         if (this.maze[i][j] == 1) {
-          this.mazeGraphics.fillRect(j * gameOptions.tileSize, i * gameOptions.tileSize, gameOptions.tileSize, gameOptions.tileSize);
+          this.mazeGraphics.fillRect(
+            j * gameOptions.tileSize,
+            i * gameOptions.tileSize,
+            gameOptions.tileSize,
+            gameOptions.tileSize
+          );
         }
       }
     }
@@ -157,14 +230,19 @@ class playGame extends Phaser.Scene {
       callback: function () {
         if (i < path.length) {
           this.mazeGraphics.fillStyle(0x660000);
-          this.mazeGraphics.fillRect(path[i].x * gameOptions.tileSize + 1, path[i].y * gameOptions.tileSize + 1, gameOptions.tileSize - 2, gameOptions.tileSize - 2);
+          this.mazeGraphics.fillRect(
+            path[i].x * gameOptions.tileSize + 1,
+            path[i].y * gameOptions.tileSize + 1,
+            gameOptions.tileSize - 2,
+            gameOptions.tileSize - 2
+          );
           i++;
         } else {
           //this.scene.start("PlayGame");
         }
       },
       callbackScope: this,
-      loop: true
+      loop: true,
     });
   }
   update() {
@@ -172,17 +250,47 @@ class playGame extends Phaser.Scene {
   }
 }
 
+function canMove(direction) {
+  let playGame = game.scene.scenes[0];
+  switch (direction) {
+    case 'N':
+      if (playGame.maze[player.mazeY - 1][player.mazeX] === 0) {
+        return true;
+      }
+      break;
+    case 'E':
+      if (playGame.maze[player.mazeY][player.mazeX + 1] === 0) {
+        return true;
+      }
+      break;
+    case 'S':
+      if (playGame.maze[player.mazeY + 1][player.mazeX] === 0) {
+        return true;
+      }
+      break;
+    case 'W':
+      if (playGame.maze[player.mazeY][player.mazeX - 1] === 0) {
+        return true;
+      }
+      break;
+    default:
+      return false;
+  }
+
+  return false;
+}
+
 function resize() {
-  var canvas = document.querySelector("canvas");
+  var canvas = document.querySelector('canvas');
   var windowWidth = window.innerWidth;
   var windowHeight = window.innerHeight;
   var windowRatio = windowWidth / windowHeight;
   var gameRatio = game.config.width / game.config.height;
   if (windowRatio < gameRatio) {
-    canvas.style.width = windowWidth + "px";
-    canvas.style.height = (windowWidth / gameRatio) + "px";
+    canvas.style.width = windowWidth + 'px';
+    canvas.style.height = windowWidth / gameRatio + 'px';
   } else {
-    canvas.style.width = (windowHeight * gameRatio) + "px";
-    canvas.style.height = windowHeight + "px";
+    canvas.style.width = windowHeight * gameRatio + 'px';
+    canvas.style.height = windowHeight + 'px';
   }
 }
