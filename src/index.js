@@ -39,6 +39,7 @@ class playGame extends Phaser.Scene {
   preload() {
     this.load.image('temp-santa', tempSanta);
   }
+
   create() {
     this.mazeGraphics = this.add.graphics();
     var moves = [];
@@ -144,6 +145,11 @@ class playGame extends Phaser.Scene {
     player.mazeY = gameOptions.playerStartingY;
 
     player.setPosition(playerX, playerY);
+
+    // Camera stuff
+    this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
+    this.cameras.main.startFollow(player, true, 0.08, 0.08);
+    this.cameras.main.setZoom(4);
 
     // Movement keys
     this.input.keyboard.on('keydown', function (e) {
