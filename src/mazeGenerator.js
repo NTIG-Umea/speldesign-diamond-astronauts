@@ -1,4 +1,4 @@
-import gameOptions from 'gameOptions';
+import gameOptions from './gameOptions';
 import Phaser from 'phaser';
 
 export default function () {
@@ -19,28 +19,28 @@ export default function () {
     if (
       posY + 2 > 0 &&
       posY + 2 < gameOptions.mazeHeight - 1 &&
-      maze[posY + 2][posX] == 1
+      maze[posY + 2][posX] === 1
     ) {
       possibleDirections += 'S';
     }
     if (
       posY - 2 > 0 &&
       posY - 2 < gameOptions.mazeHeight - 1 &&
-      maze[posY - 2][posX] == 1
+      maze[posY - 2][posX] === 1
     ) {
       possibleDirections += 'N';
     }
     if (
       posX - 2 > 0 &&
       posX - 2 < gameOptions.mazeWidth - 1 &&
-      maze[posY][posX - 2] == 1
+      maze[posY][posX - 2] === 1
     ) {
       possibleDirections += 'W';
     }
     if (
       posX + 2 > 0 &&
       posX + 2 < gameOptions.mazeWidth - 1 &&
-      maze[posY][posX + 2] == 1
+      maze[posY][posX + 2] === 1
     ) {
       possibleDirections += 'E';
     }
