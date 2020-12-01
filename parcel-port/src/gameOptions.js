@@ -1,4 +1,4 @@
-export default gameOptions = {
+export default {
     mazeWidth: 31,
     mazeHeight: 31,
     tileSize: 64,
@@ -9,4 +9,3 @@ export default gameOptions = {
     mazeEndX: 31 - 2, // this should read the value from gameOptions.mazeWidth
     mazeEndY: 31 - 2,
   };
-  
