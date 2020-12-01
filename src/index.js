@@ -19,13 +19,13 @@ var score = 0;
 // };
 
 window.onload = function () {
-  var gameConfig = {
-    type: Phaser.CANVAS,
-    width: gameOptions.mazeWidth * gameOptions.tileSize,
-    height: gameOptions.mazeHeight * gameOptions.tileSize,
-    backgroundColor: 0xaaaaaa,
-    scene: [playGame],
-  };
+  // var gameConfig = {
+  //   type: Phaser.CANVAS,
+  //   width: gameOptions.mazeWidth * gameOptions.tileSize,
+  //   height: gameOptions.mazeHeight * gameOptions.tileSize,
+  //   backgroundColor: 0xaaaaaa,
+  //   scene: [playGame],
+  // };
   game = new Phaser.Game(gameConfig);
   window.focus();
   resize();
