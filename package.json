@@ -1,39 +1,33 @@
 {
-  "name": "phaser3-project-template",
-  "version": "1.1.0",
-  "description": "A Phaser 3 Project Template",
-  "main": "src/index.js",
+  "name": "phaser-parcel",
+  "version": "1.0.0",
+  "description": "A Phaser 3 game template using Parcel bundler",
+  "main": "src/index.html",
   "scripts": {
-    "build": "webpack --config webpack/prod.js ",
-    "start": "webpack-dev-server --config webpack/base.js --open"
+    "build": "parcel build src/index.html --public-url ./ --experimental-scope-hoisting",
+    "watch": "parcel watch src/index.html",
+    "start": "parcel serve src/index.html",
+    "clean": "rm -v dist/*",
+    "test": "npx eslint src"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/photonstorm/phaser3-project-template.git"
-  },
-  "author": "Richard Davey <rdavey@gmail.com> (http://www.photonstorm.com)",
-  "license": "MIT",
-  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-  "bugs": {
-    "url": "https://github.com/photonstorm/phaser3-project-template/issues"
-  },
-  "homepage": "https://github.com/photonstorm/phaser3-project-template#readme",
-  "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
-    "babel-loader": "^8.2.1",
-    "clean-webpack-plugin": "^3.0.0",
-    "file-loader": "^4.3.0",
-    "html-webpack-plugin": "^3.2.0",
-    "raw-loader": "^3.1.0",
-    "terser-webpack-plugin": "^2.3.8",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2"
-  },
+  "keywords": [
+    "phaser",
+    "phaser3",
+    "phaser-boilerplate"
+  ],
+  "author": "samme",
+  "license": "ISC",
   "dependencies": {
-    "easystarjs": "^0.4.4",
-    "phaser": "^3.24.1"
+    "phaser": "^3.20.1"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "eslint": "^5.16.0",
+    "eslint-config-semistandard": "^13.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0"
   }
 }
