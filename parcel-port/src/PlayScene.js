@@ -3,10 +3,11 @@ import mazeGenerator from './mazeGenerator';
 import gameOptions from './gameOptions';
 import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
+import tempSanta from './assets/santa64.png';
 
 export default class PlayScene extends Phaser.Scene {
   constructor() {
-    super('PlayGame');
+    super({key: 'play'});
   }
   preload() {
     this.load.image('temp-santa', tempSanta);
@@ -175,7 +176,7 @@ export default class PlayScene extends Phaser.Scene {
     ) {
       score++;
       alert(`Your score was: ${score}`); // should use some Phaser implementation of this
-      this.scene.start('PlayGame');
+      this.scene.start('PlayScene');
     }
   }
 
