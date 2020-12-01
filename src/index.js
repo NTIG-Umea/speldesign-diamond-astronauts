@@ -206,21 +206,21 @@ class playGame extends Phaser.Scene {
     }
   }
 
-  drawMaze(posX, posY) {
-    this.mazeGraphics.fillStyle(0x000000);
-    for (var i = 0; i < gameOptions.mazeHeight; i++) {
-      for (var j = 0; j < gameOptions.mazeWidth; j++) {
-        if (this.maze[i][j] == 1) {
-          this.mazeGraphics.fillRect(
-            j * gameOptions.tileSize,
-            i * gameOptions.tileSize,
-            gameOptions.tileSize,
-            gameOptions.tileSize
-          );
-        }
-      }
-    }
-  }
+  // drawMaze(posX, posY) {
+  //   this.mazeGraphics.fillStyle(0x000000);
+  //   for (var i = 0; i < gameOptions.mazeHeight; i++) {
+  //     for (var j = 0; j < gameOptions.mazeWidth; j++) {
+  //       if (this.maze[i][j] == 1) {
+  //         this.mazeGraphics.fillRect(
+  //           j * gameOptions.tileSize,
+  //           i * gameOptions.tileSize,
+  //           gameOptions.tileSize,
+  //           gameOptions.tileSize
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
   drawPath(path) {
     var i = 0;
     this.time.addEvent({
