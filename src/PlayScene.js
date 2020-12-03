@@ -7,20 +7,21 @@ import santaSprite from './assets/santa.png';
 import canMove from './canMove';
 
 export default class PlayScene extends Phaser.Scene {
-  constructor() {
-    super({key: 'play'});
+  constructor () {
+    super({ key: 'play' });
     this.player;
     this.score = 0;
   }
-  preload() {
+  preload () {
     this.load.image('santa', santaSprite);
   }
 
-  create() {
+  create () {
     this.mazeGraphics = this.add.graphics();
     this.maze = mazeGenerator();
     this.mazeGraphics = drawMaze(this.maze, this.mazeGraphics);
 
+    // eslint-disable-next-line new-cap
     this.easystar = new EasyStar.js();
     this.easystar.setGrid(this.maze);
     this.easystar.setAcceptableTiles([0]);
@@ -61,6 +62,7 @@ export default class PlayScene extends Phaser.Scene {
         case 'End':
           this.scene.player.mazeX = gameOptions.mazeEndX;
           this.scene.player.mazeY = gameOptions.mazeEndY;
+          break;
         case 'w':
         case 'ArrowUp':
           if (canMove('N', this.scene)) this.scene.movePlayer('N');
@@ -81,7 +83,7 @@ export default class PlayScene extends Phaser.Scene {
     });
   }
 
-  movePlayer(direction) {
+  movePlayer (direction) {
     switch (direction) {
       case 'N':
         this.player.mazeY -= 1;
@@ -99,7 +101,7 @@ export default class PlayScene extends Phaser.Scene {
     this.updatePlayerPosition();
   }
 
-  updatePlayerPosition() {
+  updatePlayerPosition () {
     let x = this.player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
     let y = this.player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
     this.player.setPosition(x, y);
@@ -113,7 +115,7 @@ export default class PlayScene extends Phaser.Scene {
     }
   }
 
-  drawPath(path) {
+  drawPath (path) {
     var i = 0;
     this.time.addEvent({
       delay: 0,
@@ -128,14 +130,14 @@ export default class PlayScene extends Phaser.Scene {
           );
           i++;
         } else {
-          //this.scene.start("PlayGame");
+          // this.scene.start("PlayGame");
         }
       },
       callbackScope: this,
-      loop: true,
+      loop: true
     });
   }
-  update() {
-    //player.anims.play('walk');
+  update () {
+    // player.anims.play('walk');
   }
 }
