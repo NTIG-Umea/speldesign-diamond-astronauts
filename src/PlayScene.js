@@ -3,7 +3,7 @@ import mazeGenerator from './mazeGenerator';
 import gameOptions from './gameOptions';
 import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
-import tempSanta from './assets/santa64.png';
+import santaSprite from './assets/santa.png';
 import canMove from './canMove';
 
 export default class PlayScene extends Phaser.Scene {
@@ -13,7 +13,7 @@ export default class PlayScene extends Phaser.Scene {
     this.score = 0;
   }
   preload() {
-    this.load.image('temp-santa', tempSanta);
+    this.load.image('santa', santaSprite);
   }
 
   create() {
@@ -43,7 +43,7 @@ export default class PlayScene extends Phaser.Scene {
     this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    this.player = this.add.sprite(this.playerX, this.playerY, 'temp-santa');
+    this.player = this.add.sprite(this.playerX, this.playerY, 'santa');
 
     this.player.mazeX = gameOptions.playerStartingX;
     this.player.mazeY = gameOptions.playerStartingY;
