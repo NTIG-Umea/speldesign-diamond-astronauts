@@ -9,7 +9,6 @@ import canMove from './canMove';
 export default class PlayScene extends Phaser.Scene {
   constructor () {
     super({ key: 'play' });
-    this.player;
     this.score = 0;
   }
   preload () {
