@@ -58,6 +58,9 @@ export default class PlayScene extends Phaser.Scene {
     // Movement keys
     this.input.keyboard.on('keydown', function (e) {
       switch (e.key) {
+        case 'End':
+          this.scene.player.mazeX = gameOptions.mazeEndX;
+          this.scene.player.mazeY = gameOptions.mazeEndY;
         case 'w':
         case 'ArrowUp':
           if (canMove('N', this.scene)) this.scene.movePlayer('N');
@@ -106,7 +109,7 @@ export default class PlayScene extends Phaser.Scene {
     ) {
       this.score++;
       alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
-      this.scene.start('PlayScene');
+      this.scene.start('play');
     }
   }
 
