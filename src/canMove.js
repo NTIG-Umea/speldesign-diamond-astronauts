@@ -1,4 +1,4 @@
-export default function(direction, playScene) {
+export default function (direction, playScene) {
   switch (direction) {
     case 'N':
       if (playScene.maze[playScene.player.mazeY - 1][playScene.player.mazeX] === 0) {
