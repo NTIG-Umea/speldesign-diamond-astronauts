@@ -10,6 +10,7 @@ export default class PlayScene extends Phaser.Scene {
   constructor() {
     super({key: 'play'});
     this.player;
+    this.score = 0;
   }
   preload() {
     this.load.image('temp-santa', tempSanta);
@@ -103,8 +104,8 @@ export default class PlayScene extends Phaser.Scene {
       this.player.mazeX === gameOptions.mazeEndX &&
       this.player.mazeY === gameOptions.mazeEndY
     ) {
-      score++;
-      alert(`Your score was: ${score}`); // should use some Phaser implementation of this
+      this.score++;
+      alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
       this.scene.start('PlayScene');
     }
   }
