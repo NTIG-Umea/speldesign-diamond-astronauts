@@ -12,36 +12,6 @@ window.onload = function () {
   window.addEventListener('resize', resize, false);
 };
 
-function canMove(direction) {
-  let playGame = game.scene.scenes[0];
-  switch (direction) {
-    case 'N':
-      if (playGame.maze[player.mazeY - 1][player.mazeX] === 0) {
-        return true;
-      }
-      break;
-    case 'E':
-      if (playGame.maze[player.mazeY][player.mazeX + 1] === 0) {
-        return true;
-      }
-      break;
-    case 'S':
-      if (playGame.maze[player.mazeY + 1][player.mazeX] === 0) {
-        return true;
-      }
-      break;
-    case 'W':
-      if (playGame.maze[player.mazeY][player.mazeX - 1] === 0) {
-        return true;
-      }
-      break;
-    default:
-      return false;
-  }
-
-  return false;
-}
-
 function resize() {
   var canvas = document.querySelector('canvas');
   var windowWidth = window.innerWidth;
