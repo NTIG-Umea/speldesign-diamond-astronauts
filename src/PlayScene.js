@@ -4,6 +4,7 @@ import gameOptions from './gameOptions';
 import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
 import tempSanta from './assets/santa64.png';
+import canMove from './canMove';
 
 export default class PlayScene extends Phaser.Scene {
   constructor() {
@@ -58,19 +59,19 @@ export default class PlayScene extends Phaser.Scene {
       switch (e.key) {
         case 'w':
         case 'ArrowUp':
-          if (canMove('N')) this.scene.movePlayer('N');
+          if (canMove('N', this.scene)) this.scene.movePlayer('N');
           break;
         case 'd':
         case 'ArrowRight':
-          if (canMove('E')) this.scene.movePlayer('E');
+          if (canMove('E', this.scene)) this.scene.movePlayer('E');
           break;
         case 's':
         case 'ArrowDown':
-          if (canMove('S')) this.scene.movePlayer('S');
+          if (canMove('S', this.scene)) this.scene.movePlayer('S');
           break;
         case 'a':
         case 'ArrowLeft':
-          if (canMove('W')) this.scene.movePlayer('W');
+          if (canMove('W', this.scene)) this.scene.movePlayer('W');
           break;
       }
     });
