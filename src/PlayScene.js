@@ -24,6 +24,19 @@ export default class PlayScene extends Phaser.Scene {
     this.maze = mazeGenerator();
     this.mazeGraphics = drawMaze(this.maze, this.mazeGraphics);
 
+    this.mazeGraphicsNew = [];
+
+    for (let y = 0; y < gameOptions.mazeHeight; y++) {
+      this.mazeGraphicsNew[y] = [];
+      for (let x = 0; x < gameOptions.mazeWidth; x++) {
+        if (this.maze[y][x] === 1) {
+          this.mazeGraphicsNew[y][x] = this.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
+        } else {
+          this.mazeGraphicsNew[y][x] = this.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor');
+        }
+      }
+    }
+
     // eslint-disable-next-line new-cap
     this.easystar = new EasyStar.js();
     this.easystar.setGrid(this.maze);
