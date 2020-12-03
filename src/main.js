@@ -1,5 +1,12 @@
 import Phaser from 'phaser';
 import gameConfig from './gameConfig.js';
+import resize from './resize';
+
+window.onload = function () {
+  window.focus();
+  resize();
+  window.addEventListener('resize', resize, false);
+};
 
 function newGame () {
   if (game) return;
