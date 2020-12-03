@@ -61,6 +61,7 @@ export default class PlayScene extends Phaser.Scene {
         case 'End':
           this.scene.player.mazeX = gameOptions.mazeEndX;
           this.scene.player.mazeY = gameOptions.mazeEndY;
+          this.scene.updatePlayerPosition();
           break;
         case 'w':
         case 'ArrowUp':
