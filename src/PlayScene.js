@@ -8,6 +8,7 @@ import tempSanta from './assets/santa64.png';
 export default class PlayScene extends Phaser.Scene {
   constructor() {
     super({key: 'play'});
+    this.player;
   }
   preload() {
     this.load.image('temp-santa', tempSanta);
@@ -16,12 +17,12 @@ export default class PlayScene extends Phaser.Scene {
   create() {
     this.mazeGraphics = this.add.graphics();
     this.maze = mazeGenerator();
-    this.mazeGraphics = drawMaze();
+    this.mazeGraphics = drawMaze(this.maze, this.mazeGraphics);
 
-    var easystar = new EasyStar.js();
-    easystar.setGrid(this.maze);
-    easystar.setAcceptableTiles([0]);
-    easystar.findPath(
+    this.easystar = new EasyStar.js();
+    this.easystar.setGrid(this.maze);
+    this.easystar.setAcceptableTiles([0]);
+    this.easystar.findPath(
       gameOptions.mazeEndX,
       gameOptions.mazeEndY,
       1,
@@ -30,26 +31,26 @@ export default class PlayScene extends Phaser.Scene {
         this.drawPath(path);
       }.bind(this)
     );
-    easystar.calculate();
+    this.easystar.calculate();
 
     // Player stuff
     // centers the player on the current tile
-    let playerX =
+    this.playerX =
       gameOptions.playerStartingX * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    let playerY =
+    this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    player = this.add.sprite(playerX, playerY, 'temp-santa');
+    this.player = this.add.sprite(this.playerX, this.playerY, 'temp-santa');
 
-    player.mazeX = gameOptions.playerStartingX;
-    player.mazeY = gameOptions.playerStartingY;
+    this.player.mazeX = gameOptions.playerStartingX;
+    this.player.mazeY = gameOptions.playerStartingY;
 
-    player.setPosition(playerX, playerY);
+    this.player.setPosition(this.playerX, this.playerY);
 
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
-    this.cameras.main.startFollow(player, true, 0.08, 0.08);
+    this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
     this.cameras.main.setZoom(4);
 
     // Movement keys
@@ -78,28 +79,28 @@ export default class PlayScene extends Phaser.Scene {
   movePlayer(direction) {
     switch (direction) {
       case 'N':
-        player.mazeY -= 1;
+        this.player.mazeY -= 1;
         break;
       case 'E':
-        player.mazeX += 1;
+        this.player.mazeX += 1;
         break;
       case 'S':
-        player.mazeY += 1;
+        this.player.mazeY += 1;
         break;
       case 'W':
-        player.mazeX -= 1;
+        this.player.mazeX -= 1;
         break;
     }
     this.updatePlayerPosition();
   }
 
   updatePlayerPosition() {
-    let x = player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
-    let y = player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
-    player.setPosition(x, y);
+    let x = this.player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
+    let y = this.player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
+    this.player.setPosition(x, y);
     if (
-      player.mazeX === gameOptions.mazeEndX &&
-      player.mazeY === gameOptions.mazeEndY
+      this.player.mazeX === gameOptions.mazeEndX &&
+      this.player.mazeY === gameOptions.mazeEndY
     ) {
       score++;
       alert(`Your score was: ${score}`); // should use some Phaser implementation of this
