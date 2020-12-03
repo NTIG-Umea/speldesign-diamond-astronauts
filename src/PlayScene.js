@@ -5,6 +5,8 @@ import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
 import santaSprite from './assets/santa.png';
 import canMove from './canMove';
+import mazeTop from './assets/maze-top.png';
+import mazeFloor from './assets/maze-floor.png';
 
 export default class PlayScene extends Phaser.Scene {
   constructor () {
@@ -13,6 +15,8 @@ export default class PlayScene extends Phaser.Scene {
   }
   preload () {
     this.load.image('santa', santaSprite);
+    this.load.image('maze-floor', mazeFloor);
+    this.load.image('maze-top', mazeTop);
   }
 
   create () {
