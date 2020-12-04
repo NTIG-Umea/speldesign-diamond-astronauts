@@ -6,6 +6,7 @@ import EasyStar from 'easystarjs';
 import santaSprite from './assets/santa.png';
 import mazeTop from './assets/maze-top.png';
 import mazeFloor from './assets/maze-floor.png';
+import mazeFloorRedTint from './assets/maze-floor-red-tint.png';
 
 export default class PlayScene extends Phaser.Scene {
   constructor () {
@@ -16,6 +17,7 @@ export default class PlayScene extends Phaser.Scene {
     this.load.image('santa', santaSprite);
     this.load.image('maze-floor', mazeFloor);
     this.load.image('maze-top', mazeTop);
+    this.load.image('maze-floor-red-tint', mazeFloorRedTint);
   }
 
   create () {
@@ -95,18 +97,12 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   drawPath (path) {
-    var i = 0;
+    let i = 0;
     this.time.addEvent({
       delay: 0,
       callback: function () {
         if (i < path.length) {
-          this.mazeGraphics.fillStyle(0x660000);
-          this.mazeGraphics.fillRect(
-            path[i].x * gameOptions.tileSize + 1,
-            path[i].y * gameOptions.tileSize + 1,
-            gameOptions.tileSize - 2,
-            gameOptions.tileSize - 2
-          );
+          this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('maze-floor-red-tint');
           i++;
         } else {
           // this.scene.start("PlayGame");
