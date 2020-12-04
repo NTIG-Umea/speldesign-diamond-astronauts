@@ -26,11 +26,14 @@ export default class PlayScene extends Phaser.Scene {
 
     this.mazeGraphicsNew = [];
 
+    this.mazeWalls = this.physics.add.staticGroup();
+
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.maze[y][x] === 1) {
-          this.mazeGraphicsNew[y][x] = this.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
+          // this.mazeGraphicsNew[y][x] = this.physics.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
+          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
         } else {
           this.mazeGraphicsNew[y][x] = this.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor');
         }
@@ -60,7 +63,15 @@ export default class PlayScene extends Phaser.Scene {
     this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    this.player = this.add.sprite(this.playerX, this.playerY, 'santa').setScale(0.5);
+    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'santa').setScale(0.5);
+
+    for (let i = 0; i < gameOptions.mazeHeight; i++) {
+      for (let j = 0; j < gameOptions.mazeWidth; j++) {
+        if (this.mazeGraphicsNew[i][j].texture.key === 'maze-top') {
+          this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j]);
+        }
+      }
+    }
 
     this.player.mazeX = gameOptions.playerStartingX;
     this.player.mazeY = gameOptions.playerStartingY;
@@ -73,31 +84,33 @@ export default class PlayScene extends Phaser.Scene {
     this.cameras.main.setZoom(4);
 
     // Movement keys
-    this.input.keyboard.on('keydown', function (e) {
-      switch (e.key) {
-        case 'End':
-          this.scene.player.mazeX = gameOptions.mazeEndX;
-          this.scene.player.mazeY = gameOptions.mazeEndY;
-          this.scene.updatePlayerPosition();
-          break;
-        case 'w':
-        case 'ArrowUp':
-          if (canMove('N', this.scene)) this.scene.movePlayer('N');
-          break;
-        case 'd':
-        case 'ArrowRight':
-          if (canMove('E', this.scene)) this.scene.movePlayer('E');
-          break;
-        case 's':
-        case 'ArrowDown':
-          if (canMove('S', this.scene)) this.scene.movePlayer('S');
-          break;
-        case 'a':
-        case 'ArrowLeft':
-          if (canMove('W', this.scene)) this.scene.movePlayer('W');
-          break;
-      }
-    });
+    // this.input.keyboard.on('keydown', function (e) {
+    //   switch (e.key) {
+    //     case 'End':
+    //       this.scene.player.mazeX = gameOptions.mazeEndX;
+    //       this.scene.player.mazeY = gameOptions.mazeEndY;
+    //       this.scene.updatePlayerPosition();
+    //       break;
+    //     case 'w':
+    //     case 'ArrowUp':
+    //       if (canMove('N', this.scene)) this.scene.movePlayer('N');
+    //       break;
+    //     case 'd':
+    //     case 'ArrowRight':
+    //       if (canMove('E', this.scene)) this.scene.movePlayer('E');
+    //       break;
+    //     case 's':
+    //     case 'ArrowDown':
+    //       if (canMove('S', this.scene)) this.scene.movePlayer('S');
+    //       break;
+    //     case 'a':
+    //     case 'ArrowLeft':
+    //       if (canMove('W', this.scene)) this.scene.movePlayer('W');
+    //       break;
+    //   }
+    // });
+
+    this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
   }
 
   movePlayer (direction) {
@@ -154,7 +167,22 @@ export default class PlayScene extends Phaser.Scene {
       loop: true
     });
   }
+
   update () {
-    // player.anims.play('walk');
+    if (this.keys.W.isDown || this.keys.up.isDown) {
+      this.player.setVelocityY(-200);
+    } else if (this.keys.S.isDown || this.keys.down.isDown) {
+      this.player.setVelocityY(200);
+    } else {
+      this.player.setVelocityY(0);
+    }
+
+    if (this.keys.D.isDown || this.keys.right.isDown) {
+      this.player.setVelocityX(200);
+    } else if (this.keys.A.isDown || this.keys.left.isDown) {
+      this.player.setVelocityX(-200);
+    } else {
+      this.player.setVelocityX(0);
+    }
   }
 }
