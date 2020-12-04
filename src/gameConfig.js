@@ -10,5 +10,11 @@ export default {
   width: gameOptions.mazeWidth * gameOptions.tileSize,
   height: gameOptions.mazeHeight * gameOptions.tileSize,
   backgroundColor: 0xaaaaaa,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: true
+    }
+  },
   scene: [BootScene, MenuScene, PlayScene, EndScene]
 };
