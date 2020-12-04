@@ -26,6 +26,7 @@ export default class PlayScene extends Phaser.Scene {
     this.mazeGraphicsNew = [];
 
     this.mazeWalls = this.physics.add.staticGroup();
+    this.mazeFloorTiles = this.physics.add.staticGroup();
 
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       this.mazeGraphicsNew[y] = [];
@@ -33,7 +34,7 @@ export default class PlayScene extends Phaser.Scene {
         if (this.maze[y][x] === 1) {
           this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
         } else {
-          this.mazeGraphicsNew[y][x] = this.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor');
+          this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor');
         }
       }
     }
@@ -71,6 +72,8 @@ export default class PlayScene extends Phaser.Scene {
       }
     }
 
+    this.physics.add.overlap(this.player, this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX], this.clearLevel, null, this);
+
     this.player.mazeX = gameOptions.playerStartingX;
     this.player.mazeY = gameOptions.playerStartingY;
 
@@ -82,6 +85,13 @@ export default class PlayScene extends Phaser.Scene {
     this.cameras.main.setZoom(4);
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
+  }
+
+  clearLevel () {
+    this.score++;
+    alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
+    console.log(this);
+    this.scene.start('play');
   }
 
   drawPath (path) {
