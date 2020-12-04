@@ -4,7 +4,6 @@ import gameOptions from './gameOptions';
 import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
 import santaSprite from './assets/santa.png';
-import canMove from './canMove';
 import mazeTop from './assets/maze-top.png';
 import mazeFloor from './assets/maze-floor.png';
 
@@ -32,7 +31,6 @@ export default class PlayScene extends Phaser.Scene {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.maze[y][x] === 1) {
-          // this.mazeGraphicsNew[y][x] = this.physics.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
           this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
         } else {
           this.mazeGraphicsNew[y][x] = this.add.sprite(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor');
@@ -83,66 +81,7 @@ export default class PlayScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
     this.cameras.main.setZoom(4);
 
-    // Movement keys
-    // this.input.keyboard.on('keydown', function (e) {
-    //   switch (e.key) {
-    //     case 'End':
-    //       this.scene.player.mazeX = gameOptions.mazeEndX;
-    //       this.scene.player.mazeY = gameOptions.mazeEndY;
-    //       this.scene.updatePlayerPosition();
-    //       break;
-    //     case 'w':
-    //     case 'ArrowUp':
-    //       if (canMove('N', this.scene)) this.scene.movePlayer('N');
-    //       break;
-    //     case 'd':
-    //     case 'ArrowRight':
-    //       if (canMove('E', this.scene)) this.scene.movePlayer('E');
-    //       break;
-    //     case 's':
-    //     case 'ArrowDown':
-    //       if (canMove('S', this.scene)) this.scene.movePlayer('S');
-    //       break;
-    //     case 'a':
-    //     case 'ArrowLeft':
-    //       if (canMove('W', this.scene)) this.scene.movePlayer('W');
-    //       break;
-    //   }
-    // });
-
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
-  }
-
-  movePlayer (direction) {
-    switch (direction) {
-      case 'N':
-        this.player.mazeY -= 1;
-        break;
-      case 'E':
-        this.player.mazeX += 1;
-        break;
-      case 'S':
-        this.player.mazeY += 1;
-        break;
-      case 'W':
-        this.player.mazeX -= 1;
-        break;
-    }
-    this.updatePlayerPosition();
-  }
-
-  updatePlayerPosition () {
-    let x = this.player.mazeX * gameOptions.tileSize + gameOptions.tileSize / 2;
-    let y = this.player.mazeY * gameOptions.tileSize + gameOptions.tileSize / 2;
-    this.player.setPosition(x, y);
-    if (
-      this.player.mazeX === gameOptions.mazeEndX &&
-      this.player.mazeY === gameOptions.mazeEndY
-    ) {
-      this.score++;
-      alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
-      this.scene.start('play');
-    }
   }
 
   drawPath (path) {
