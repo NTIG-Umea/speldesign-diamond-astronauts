@@ -18,7 +18,6 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   create () {
-
     this.mazeGraphics = this.add.graphics();
     this.maze = mazeGenerator();
     this.mazeGraphics = drawMaze(this.maze, this.mazeGraphics);
@@ -52,12 +51,12 @@ export default class PlayScene extends Phaser.Scene {
 
     this.player.setPosition(this.playerX, this.playerY);
 
-    this.playerHB = new HealthBar(this, this.player.x, this.player.y);
-
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
     this.cameras.main.setZoom(4);
+
+    this.playerHB = new HealthBar(this, this.cameras.main.worldView.x, this.cameras.main.worldView.y);
 
     // Movement keys
     this.input.keyboard.on('keydown', function (e) {
@@ -140,6 +139,9 @@ export default class PlayScene extends Phaser.Scene {
     });
   }
   update () {
+    let worldView = this.cameras.main.worldView;
+    this.playerHB.setPosition(worldView.x, worldView.y);
+    this.playerHB.draw();
     // player.anims.play('walk');
   }
 }
