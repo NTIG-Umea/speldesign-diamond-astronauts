@@ -10,12 +10,6 @@ export default class BootScene extends Phaser.Scene {
     var bg = this.add.rectangle(400, 300, 400, 30, 0x666666);
     var bar = this.add.rectangle(bg.x, bg.y, bg.width, bg.height, 0xffffff).setScale(0, 1);
 
-    console.table(images);
-
-    this.load.image('space', images.space);
-    this.load.image('logo', images.logo);
-    this.load.image('red', images.red);
-
     this.load.image('santa', images.santa);
     this.load.image('maze-floor', images.maze_floor);
     this.load.image('maze-top', images.maze_top);
