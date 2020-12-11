@@ -17,7 +17,7 @@ export default class MenuScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     this.input.on('pointerdown', function () {
-      this.scene.switch('play');
+      this.scene.start('play');
     }, this);
   }
 }
