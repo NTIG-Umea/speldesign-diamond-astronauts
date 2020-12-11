@@ -1,7 +1,7 @@
 export default {
   mazeWidth: 31,
   mazeHeight: 31,
-  tileSize: 64,
+  tileSize: 32,
   playerStartingX: 1,
   playerStartingY: 1,
   mazeStartingX: 1,
