@@ -26,6 +26,11 @@ export default class HealthBar {
     return (this.value === 0);
   }
 
+  setPosition (x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   draw () {
     this.bar.clear();
     //  BG
