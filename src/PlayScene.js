@@ -124,7 +124,7 @@ export default class PlayScene extends Phaser.Scene {
     } else {
       this.player.setVelocityX(0);
     }
-    
+
     let worldView = this.cameras.main.worldView;
     this.playerHB.setPosition(worldView.x, worldView.y);
     // decrease player health as game goes on
