@@ -141,6 +141,12 @@ export default class PlayScene extends Phaser.Scene {
   update () {
     let worldView = this.cameras.main.worldView;
     this.playerHB.setPosition(worldView.x, worldView.y);
+    // decrease player health as game goes on
+    this.playerHB.decrease(0.01);
+    if (this.playerHB.value <= 0) {
+      alert(`Your score was: ${this.score}`);
+      this.scene.switch('end');
+    }
     this.playerHB.draw();
     // player.anims.play('walk');
   }
