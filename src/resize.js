@@ -1,6 +1,6 @@
 import gameConfig from './gameConfig';
 
-export default function() {
+export default function () {
   var canvas = document.querySelector('canvas');
   var windowWidth = window.innerWidth;
   var windowHeight = window.innerHeight;
