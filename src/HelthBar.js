@@ -34,19 +34,14 @@ export default class HealthBar {
   draw () {
     this.bar.clear();
     //  BG
-    this.bar.fillStyle(0xff0000);
+    this.bar.fillStyle(0xb2dbed);
     this.bar.fillRect(this.x, this.y, 80, 16);
 
     //  Health
 
-    this.bar.fillStyle(0xffffff);
+    this.bar.fillStyle(0x000000);
     this.bar.fillRect(this.x + 2, this.y + 2, 76, 12);
-
-    if (this.value < 30) {
-      this.bar.fillStyle(0xff0000);
-    } else {
-      this.bar.fillStyle(0x00ff00);
-    }
+    this.bar.fillStyle(0xe63b44);
 
     var d = Math.floor(this.p * this.value);
 
