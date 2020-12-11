@@ -3,10 +3,6 @@ import mazeGenerator from './mazeGenerator';
 import gameOptions from './gameOptions';
 import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
-import santaSprite from './assets/santa.png';
-import mazeTop from './assets/maze-top.png';
-import mazeFloor from './assets/maze-floor.png';
-import mazeFloorRedTint from './assets/maze-floor-red-tint.png';
 
 export default class PlayScene extends Phaser.Scene {
   constructor () {
@@ -14,10 +10,6 @@ export default class PlayScene extends Phaser.Scene {
     this.score = 0;
   }
   preload () {
-    this.load.image('santa', santaSprite);
-    this.load.image('maze-floor', mazeFloor);
-    this.load.image('maze-top', mazeTop);
-    this.load.image('maze-floor-red-tint', mazeFloorRedTint);
   }
 
   create () {
