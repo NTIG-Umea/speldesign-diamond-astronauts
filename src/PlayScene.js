@@ -26,9 +26,9 @@ export default class PlayScene extends Phaser.Scene {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.maze[y][x] === 1) {
-          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top');
+          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top').setPipeline('Light2D');
         } else {
-          this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor');
+          this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor').setPipeline('Light2D');
         }
       }
     }
@@ -56,8 +56,15 @@ export default class PlayScene extends Phaser.Scene {
     this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'santa').setScale(0.5);
+    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'santa').setScale(0.5).setPipeline('Light2D');
     this.player.setSize(46, 64);
+
+    this.playerLight = this.lights.addLight(0, 0, 200, 0xffffff, 1).setScrollFactor(0.0);
+    this.lights.setAmbientColor(0xffffff);
+    this.lights.enable();
+
+    this.playerLight.x = this.player.x;
+    this.playerLight.y = this.player.y;
 
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
