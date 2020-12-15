@@ -88,6 +88,11 @@ export default class PlayScene extends Phaser.Scene {
     this.score++;
     alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
     console.log(this);
+    gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
+    gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
+    gameOptions.mazeEndX = gameOptions.mazeWidth - 2;
+    gameOptions.mazeEndY = gameOptions.mazeHeight - 2;
+    gameOptions.damagePerUpdate *= gameOptions.damageModifier;
     this.scene.start('play');
   }
 
@@ -128,7 +133,7 @@ export default class PlayScene extends Phaser.Scene {
     let worldView = this.cameras.main.worldView;
     this.playerHB.setPosition(worldView.x, worldView.y);
     // decrease player health as game goes on
-    this.playerHB.decrease(0.01);
+    this.playerHB.decrease(gameOptions.damagePerUpdate);
     if (this.playerHB.value <= 0) {
       alert(`Your score was: ${this.score}`);
       this.scene.switch('end');
