@@ -7,5 +7,8 @@ export default {
   mazeStartingX: 1,
   mazeStartingY: 1,
   mazeEndX: 31 - 2, // this should read the value from gameOptions.mazeWidth
-  mazeEndY: 31 - 2
+  mazeEndY: 31 - 2,
+  mazeSizeIncrement: 10,
+  damagePerUpdate: 0.01,
+  damageModifier: 0.5
 };

@@ -3,6 +3,7 @@ import mazeGenerator from './mazeGenerator';
 import gameOptions from './gameOptions';
 import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
+import HealthBar from './HelthBar';
 
 export default class PlayScene extends Phaser.Scene {
   constructor () {
@@ -85,6 +86,7 @@ export default class PlayScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
     this.cameras.main.setZoom(4);
+    this.playerHB = new HealthBar(this, this.cameras.main.worldView.x, this.cameras.main.worldView.y);
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
   }
@@ -93,6 +95,11 @@ export default class PlayScene extends Phaser.Scene {
     this.score++;
     alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
     console.log(this);
+    gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
+    gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
+    gameOptions.mazeEndX = gameOptions.mazeWidth - 2;
+    gameOptions.mazeEndY = gameOptions.mazeHeight - 2;
+    gameOptions.damagePerUpdate *= gameOptions.damageModifier;
     this.scene.start('play');
   }
 
@@ -129,5 +136,15 @@ export default class PlayScene extends Phaser.Scene {
     } else {
       this.player.setVelocityX(0);
     }
+
+    let worldView = this.cameras.main.worldView;
+    this.playerHB.setPosition(worldView.x, worldView.y);
+    // decrease player health as game goes on
+    this.playerHB.decrease(gameOptions.damagePerUpdate);
+    if (this.playerHB.value <= 0) {
+      alert(`Your score was: ${this.score}`);
+      this.scene.switch('end');
+    }
+    this.playerHB.draw();
   }
 }
