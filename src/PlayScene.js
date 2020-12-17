@@ -103,7 +103,7 @@ export default class PlayScene extends Phaser.Scene {
 
   clearLevel () {
     this.score++;
-    alert(`Good job, you cleared the first maze! 🥳 Your score is: ${this.score}`); // should use some Phaser implementation of this
+    alert(`Good job, you cleared this maze! 🥳 Your score is: ${this.score}`); // should use some Phaser implementation of this
     console.log(this);
     gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
     gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
