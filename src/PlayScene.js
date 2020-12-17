@@ -30,12 +30,12 @@ export default class PlayScene extends Phaser.Scene {
           this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'sprites', 'brickwall').setPipeline('Light2D');
+            'sprites', 'brickwall').setPipeline('Light2D').setScale(1.05);
         } else {
           this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'sprites', 'Stone_floor').setPipeline('Light2D');
+            'sprites', 'Stone_floor').setPipeline('Light2D').setScale(1.05);
         }
       }
     }
