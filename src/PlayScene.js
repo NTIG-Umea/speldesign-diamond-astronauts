@@ -149,14 +149,14 @@ export default class PlayScene extends Phaser.Scene {
     this.playerLight.x = this.player.x;
     this.playerLight.y = this.player.y;
 
-    // let worldView = this.cameras.main.worldView;
-    // this.playerHB.setPosition(worldView.x, worldView.y);
-    // // decrease player health as game goes on
-    // this.playerHB.decrease(gameOptions.damagePerUpdate);
-    // if (this.playerHB.value <= 0) {
-    //   alert(`Your score was: ${this.score}`);
-    //   this.scene.switch('end');
-    // }
-    // this.playerHB.draw();
+    let worldView = this.cameras.main.worldView;
+    this.playerHB.setPosition(worldView.x, worldView.y);
+    // decrease player health as game goes on
+    this.playerHB.decrease(gameOptions.damagePerUpdate);
+    if (this.playerHB.value <= 0) {
+      alert(`Your score was: ${this.score}`);
+      this.scene.switch('end');
+    }
+    this.playerHB.draw();
   }
 }
