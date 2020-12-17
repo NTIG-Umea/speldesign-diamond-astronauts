@@ -2,7 +2,7 @@
 	"textures": [
 		{
 			"image": "sprites.png",
-			"normals": "sprites-normal.png",
+			"normalMap": "sprites-normal.png",
 			"format": "RGBA8888",
 			"size": {
 				"w": 38,
