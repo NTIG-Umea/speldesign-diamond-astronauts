@@ -65,7 +65,7 @@ export default class PlayScene extends Phaser.Scene {
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
     this.player = this.physics.add.sprite(this.playerX, this.playerY, 'spritesheet', 'santa_front').setScale(0.5).refreshBody();
-    this.player.setSize(34, 48);
+    this.player.setSize(42, 60);
 
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
