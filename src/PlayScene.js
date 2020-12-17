@@ -95,9 +95,9 @@ export default class PlayScene extends Phaser.Scene {
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
 
-    this.playerLight = this.lights.addLight(this.player.x, this.player.y, 120, 0xffffff, 3).setScrollFactor(1, 1);
+    this.playerLight = this.lights.addLight(this.player.x, this.player.y, 130, 0xffffff, 3).setScrollFactor(1, 1);
     this.lights.enable();
-    this.lights.setAmbientColor(0x303030);
+    this.lights.setAmbientColor(0x000000);
   }
 
   clearLevel () {
