@@ -28,10 +28,18 @@ export default class PlayScene extends Phaser.Scene {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.maze[y][x] === 1) {
-          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
-            x * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'spritesheet', 'wall_ice').setPipeline('Light2D').setScale(1.05);
+          if (y + 1 < gameOptions.mazeHeight && this.maze[y + 1][x] === 0) {
+            this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
+              x * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              y * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              'spritesheet', 'wall_ice_half_dark').setPipeline('Light2D').setScale(1.05);
+            this.mazeGraphicsNew[y][x].setRotation(-1 * Math.PI / 2);
+          } else {
+            this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
+              x * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              y * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              'spritesheet', 'wall_ice_dark').setPipeline('Light2D').setScale(1.05);
+          }
         } else {
           this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
@@ -69,7 +77,7 @@ export default class PlayScene extends Phaser.Scene {
 
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
-        if (this.mazeGraphicsNew[i][j].frame.name === 'wall_ice') {
+        if (this.mazeGraphicsNew[i][j].frame.name.includes('wall')) {
           this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j]);
         }
       }

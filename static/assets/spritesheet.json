@@ -5,8 +5,8 @@
 			"normalMap": "spritesheet_normal.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 188,
-				"h": 145
+				"w": 170,
+				"h": 186
 			},
 			"scale": 1,
 			"frames": [
@@ -88,8 +88,8 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 1,
-						"y": 67,
+						"x": 137,
+						"y": 1,
 						"w": 32,
 						"h": 32
 					}
@@ -109,8 +109,8 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 1,
-						"y": 101,
+						"x": 137,
+						"y": 35,
 						"w": 32,
 						"h": 32
 					}
@@ -130,7 +130,7 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 35,
+						"x": 1,
 						"y": 67,
 						"w": 32,
 						"h": 32
@@ -152,7 +152,7 @@
 					},
 					"frame": {
 						"x": 35,
-						"y": 101,
+						"y": 67,
 						"w": 32,
 						"h": 32
 					}
@@ -173,7 +173,7 @@
 					},
 					"frame": {
 						"x": 69,
-						"y": 67,
+						"y": 69,
 						"w": 32,
 						"h": 32
 					}
@@ -193,8 +193,8 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 103,
-						"y": 67,
+						"x": 1,
+						"y": 101,
 						"w": 32,
 						"h": 32
 					}
@@ -214,7 +214,7 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 69,
+						"x": 35,
 						"y": 101,
 						"w": 32,
 						"h": 32
@@ -236,55 +236,13 @@
 					},
 					"frame": {
 						"x": 103,
-						"y": 101,
+						"y": 69,
 						"w": 32,
 						"h": 32
 					}
 				},
 				{
-					"filename": "wall_ice_half_dark",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 137,
-						"y": 1,
-						"w": 32,
-						"h": 32
-					}
-				},
-				{
-					"filename": "wall_stone",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 137,
-						"y": 35,
-						"w": 32,
-						"h": 32
-					}
-				},
-				{
-					"filename": "wall_stone_corner",
+					"filename": "wall_ice_dark",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -305,6 +263,69 @@
 					}
 				},
 				{
+					"filename": "wall_ice_half_dark",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 69,
+						"y": 103,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "wall_stone",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 1,
+						"y": 135,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "wall_stone_corner",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 35,
+						"y": 135,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
 					"filename": "wall_stone_half_dark",
 					"rotated": false,
 					"trimmed": false,
@@ -319,7 +340,7 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 137,
+						"x": 103,
 						"y": 103,
 						"w": 32,
 						"h": 32
@@ -340,8 +361,8 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 171,
-						"y": 1,
+						"x": 137,
+						"y": 103,
 						"w": 12,
 						"h": 26
 					}
@@ -361,31 +382,10 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 171,
-						"y": 29,
+						"x": 137,
+						"y": 131,
 						"w": 12,
 						"h": 26
-					}
-				},
-				{
-					"filename": "wall_brick_slim",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 9
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 9
-					},
-					"frame": {
-						"x": 1,
-						"y": 135,
-						"w": 32,
-						"h": 9
 					}
 				},
 				{
@@ -403,8 +403,8 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 171,
-						"y": 57,
+						"x": 69,
+						"y": 137,
 						"w": 16,
 						"h": 16
 					}
@@ -424,8 +424,8 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 171,
-						"y": 75,
+						"x": 69,
+						"y": 155,
 						"w": 16,
 						"h": 16
 					}
@@ -445,8 +445,8 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 171,
-						"y": 93,
+						"x": 1,
+						"y": 169,
 						"w": 16,
 						"h": 16
 					}
@@ -466,10 +466,31 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 171,
-						"y": 111,
+						"x": 19,
+						"y": 169,
 						"w": 16,
 						"h": 16
+					}
+				},
+				{
+					"filename": "wall_brick_slim",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 9
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 9
+					},
+					"frame": {
+						"x": 87,
+						"y": 137,
+						"w": 32,
+						"h": 9
 					}
 				}
 			]
