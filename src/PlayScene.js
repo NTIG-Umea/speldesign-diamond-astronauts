@@ -27,9 +27,11 @@ export default class PlayScene extends Phaser.Scene {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.maze[y][x] === 1) {
-          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-top').setPipeline('Light2D');
+          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'sprites', 'brickwall');
+          this.mazeGraphicsNew[y][x].setPipeline('Light2D');
         } else {
-          this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'maze-floor').setPipeline('Light2D');
+          this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(x * gameOptions.tileSize + (gameOptions.tileSize / 2), y * gameOptions.tileSize + (gameOptions.tileSize / 2), 'sprites', 'Stone_floor');
+          this.mazeGraphicsNew[y][x].setPipeline('Light2D');
         }
       }
     }
@@ -57,19 +59,24 @@ export default class PlayScene extends Phaser.Scene {
     this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'santa').setScale(0.5).setPipeline('Light2D');
+    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'sprites', 'Santa_64').setScale(0.5);
+    this.player.setPipeline('Light2D');
     this.player.setSize(46, 64);
 
-    this.playerLight = this.lights.addLight(0, 0, 200, 0xffffff, 1).setScrollFactor(0.0);
-    this.lights.setAmbientColor(0xffffff);
-    this.lights.enable();
+    this.playerLight = this.lights.addLight(0, 0, 50, 0xa3a3a3, 1).setScrollFactor(0.0);
+    this.lights.enable().setAmbientColor(0x555555);
 
     this.playerLight.x = this.player.x;
     this.playerLight.y = this.player.y;
 
+    // this.input.on('pointermove', () => {
+    //   this.playerLight.x = this.player.x;
+    //   this.playerLight.y = this.player.y;
+    // });
+
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
-        if (this.mazeGraphicsNew[i][j].texture.key === 'maze-top') {
+        if (this.mazeGraphicsNew[i][j].frame.name === 'brickwall') {
           this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j]);
         }
       }
@@ -109,7 +116,7 @@ export default class PlayScene extends Phaser.Scene {
       delay: 0,
       callback: function () {
         if (i < path.length) {
-          this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('maze-floor-red-tint');
+          this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('maze-floor-red-tint').setPipeline('Light2D');
           i++;
         } else {
           // this.scene.start("PlayGame");
@@ -136,6 +143,9 @@ export default class PlayScene extends Phaser.Scene {
     } else {
       this.player.setVelocityX(0);
     }
+
+    this.playerLight.x = this.player.x;
+    this.playerLight.y = this.player.y;
 
     let worldView = this.cameras.main.worldView;
     this.playerHB.setPosition(worldView.x, worldView.y);
