@@ -88,6 +88,33 @@ export default class PlayScene extends Phaser.Scene {
 
     this.player.setPosition(this.playerX, this.playerY);
 
+    this.anims.create({
+      key: 'walk_up',
+      frames: this.anims.generateFrameNames('spritesheet', {
+        frames: ['santa_back']
+      }),
+      frameRate: 0,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk_down',
+      frames: this.anims.generateFrameNames('spritesheet', {
+        frames: ['santa_front']
+      }),
+      frameRate: 0,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk_sideways',
+      frames: this.anims.generateFrameNames('spritesheet', {
+        frames: ['santa_side']
+      }),
+      frameRate: 0,
+      repeat: -1
+    });
+
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
@@ -133,16 +160,22 @@ export default class PlayScene extends Phaser.Scene {
   update () {
     if (this.keys.W.isDown || this.keys.up.isDown) {
       this.player.setVelocityY(-200);
+      this.player.anims.play('walk_up', true);
     } else if (this.keys.S.isDown || this.keys.down.isDown) {
       this.player.setVelocityY(200);
+      this.player.anims.play('walk_down', true);
     } else {
       this.player.setVelocityY(0);
     }
 
     if (this.keys.D.isDown || this.keys.right.isDown) {
       this.player.setVelocityX(200);
+      this.player.flipX = false;
+      this.player.anims.play('walk_sideways', true);
     } else if (this.keys.A.isDown || this.keys.left.isDown) {
       this.player.setVelocityX(-200);
+      this.player.flipX = true;
+      this.player.anims.play('walk_sideways', true);
     } else {
       this.player.setVelocityX(0);
     }
