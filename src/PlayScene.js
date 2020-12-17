@@ -15,7 +15,7 @@ export default class PlayScene extends Phaser.Scene {
 
   create () {
     // ladda image för pipeline
-    this.add.image(0, 0, 'sprites').setPipeline('Light2D');
+    this.add.image(0, 0, 'spritesheet').setPipeline('Light2D');
 
     this.maze = mazeGenerator();
 
@@ -31,12 +31,12 @@ export default class PlayScene extends Phaser.Scene {
           this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'sprites', 'brickwall').setPipeline('Light2D').setScale(1.05);
+            'spritesheet', 'wall_ice').setPipeline('Light2D').setScale(1.05);
         } else {
           this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'sprites', 'Stone_floor').setPipeline('Light2D').setScale(1.05);
+            'spritesheet', 'floor_stone_cracked').setPipeline('Light2D').setScale(1.05);
         }
       }
     }
@@ -64,12 +64,12 @@ export default class PlayScene extends Phaser.Scene {
     this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'sprites', 'Santa_64').setScale(0.5).refreshBody();
+    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'spritesheet', 'santa_front').setScale(0.5).refreshBody();
     this.player.setSize(34, 48);
 
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
-        if (this.mazeGraphicsNew[i][j].frame.name === 'brickwall') {
+        if (this.mazeGraphicsNew[i][j].frame.name === 'wall_ice') {
           this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j]);
         }
       }
