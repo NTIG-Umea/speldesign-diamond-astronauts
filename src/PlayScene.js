@@ -102,7 +102,7 @@ export default class PlayScene extends Phaser.Scene {
 
   clearLevel () {
     this.score++;
-    alert(`Your score was: ${this.score}`); // should use some Phaser implementation of this
+    alert(`Good job, you cleared the first maze! 🥳 Your score is: ${this.score}`); // should use some Phaser implementation of this
     console.log(this);
     gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
     gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
@@ -154,7 +154,7 @@ export default class PlayScene extends Phaser.Scene {
     // decrease player health as game goes on
     this.playerHB.decrease(gameOptions.damagePerUpdate);
     if (this.playerHB.value <= 0) {
-      alert(`Your score was: ${this.score}`);
+      alert(`It's freezing cold and you didn't keep warm! 🥶 Your score was: ${this.score}`);
       this.scene.switch('end');
     }
     this.playerHB.draw();
