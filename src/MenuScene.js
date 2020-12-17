@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import gameConfig from './gameConfig';
 
 export default class MenuScene extends Phaser.Scene {
   constructor () {
@@ -6,13 +7,12 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create () {
-    this.add.text(400, 200, 'AMAZING SANTA MAZE\n\nclick to play', {
+    this.add.text(gameConfig.width / 2, gameConfig.height / 2, 'AMAZING SANTA MAZE\n\nclick to play', {
       align: 'center',
       fill: 'white',
       fontFamily: 'sans-serif',
       fontSize: 48
-    })
-      .setOrigin(0.5, 0);
+    }).setOrigin(0.5, 0.5);
 
     this.input.on('pointerdown', function () {
       this.scene.start('play');
