@@ -6,7 +6,7 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create () {
-    this.add.text(400, 200, 'Phaser 3 with Parcel\n\n< play >', {
+    this.add.text(400, 200, 'AMAZING SANTA MAZE\n\nclick to play', {
       align: 'center',
       fill: 'white',
       fontFamily: 'sans-serif',
