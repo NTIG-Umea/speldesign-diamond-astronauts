@@ -154,7 +154,7 @@ export default class PlayScene extends Phaser.Scene {
       delay: 0,
       callback: function () {
         if (i < path.length) {
-          // this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('maze-floor-red-tint').setPipeline('Light2D');
+          this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
           i++;
         } else {
           // this.scene.start("PlayGame");
