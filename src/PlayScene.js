@@ -44,7 +44,8 @@ export default class PlayScene extends Phaser.Scene {
           this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'spritesheet', 'floor_stone_cracked').setPipeline('Light2D').setScale(1.05);
+            'spritesheet', Math.random() > 0.5 ? 'floor_stone_cracked' : 'floor_stone')
+            .setPipeline('Light2D').setScale(1.05);
         }
       }
     }
