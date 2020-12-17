@@ -15,7 +15,7 @@ export default class PlayScene extends Phaser.Scene {
 
   create () {
     // ladda image för pipeline
-    this.add.image(0, 0, 'sprites').setPipeline('Light2D');
+    this.add.image(0, 0, 'spritesheet').setPipeline('Light2D');
 
     this.maze = mazeGenerator();
 
@@ -28,15 +28,24 @@ export default class PlayScene extends Phaser.Scene {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.maze[y][x] === 1) {
-          this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
-            x * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'sprites', 'brickwall').setPipeline('Light2D').setScale(1.05);
+          if (y + 1 < gameOptions.mazeHeight && this.maze[y + 1][x] === 0) {
+            this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
+              x * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              y * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              'spritesheet', 'wall_ice_half_dark').setPipeline('Light2D').setScale(1.05);
+            this.mazeGraphicsNew[y][x].setRotation(-1 * Math.PI / 2);
+          } else {
+            this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
+              x * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              y * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              'spritesheet', 'wall_ice_dark').setPipeline('Light2D').setScale(1.05);
+          }
         } else {
           this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-            'sprites', 'Stone_floor').setPipeline('Light2D').setScale(1.05);
+            'spritesheet', Math.random() > 0.5 ? 'floor_stone_cracked' : 'floor_stone')
+            .setPipeline('Light2D').setScale(1.05);
         }
       }
     }
@@ -64,12 +73,12 @@ export default class PlayScene extends Phaser.Scene {
     this.playerY =
       gameOptions.playerStartingY * gameOptions.tileSize +
       gameOptions.tileSize / 2;
-    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'sprites', 'Santa_64').setScale(0.5).refreshBody();
-    this.player.setSize(34, 48);
+    this.player = this.physics.add.sprite(this.playerX, this.playerY, 'spritesheet', 'santa_front').setScale(0.5).refreshBody();
+    this.player.setSize(42, 60);
 
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
-        if (this.mazeGraphicsNew[i][j].frame.name === 'brickwall') {
+        if (this.mazeGraphicsNew[i][j].frame.name.includes('wall')) {
           this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j]);
         }
       }
@@ -88,6 +97,33 @@ export default class PlayScene extends Phaser.Scene {
 
     this.player.setPosition(this.playerX, this.playerY);
 
+    this.anims.create({
+      key: 'walk_up',
+      frames: this.anims.generateFrameNames('spritesheet', {
+        frames: ['santa_back']
+      }),
+      frameRate: 0,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk_down',
+      frames: this.anims.generateFrameNames('spritesheet', {
+        frames: ['santa_front']
+      }),
+      frameRate: 0,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'walk_sideways',
+      frames: this.anims.generateFrameNames('spritesheet', {
+        frames: ['santa_side']
+      }),
+      frameRate: 0,
+      repeat: -1
+    });
+
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
@@ -103,7 +139,7 @@ export default class PlayScene extends Phaser.Scene {
 
   clearLevel () {
     this.score++;
-    alert(`Good job, you cleared the first maze! 🥳 Your score is: ${this.score}`); // should use some Phaser implementation of this
+    alert(`Good job, you cleared this maze! 🥳 Your score is: ${this.score}`); // should use some Phaser implementation of this
     console.log(this);
     gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
     gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
@@ -119,7 +155,7 @@ export default class PlayScene extends Phaser.Scene {
       delay: 0,
       callback: function () {
         if (i < path.length) {
-          // this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('maze-floor-red-tint').setPipeline('Light2D');
+          this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
           i++;
         } else {
           // this.scene.start("PlayGame");
@@ -133,16 +169,22 @@ export default class PlayScene extends Phaser.Scene {
   update () {
     if (this.keys.W.isDown || this.keys.up.isDown) {
       this.player.setVelocityY(-200);
+      this.player.anims.play('walk_up', true);
     } else if (this.keys.S.isDown || this.keys.down.isDown) {
       this.player.setVelocityY(200);
+      this.player.anims.play('walk_down', true);
     } else {
       this.player.setVelocityY(0);
     }
 
     if (this.keys.D.isDown || this.keys.right.isDown) {
       this.player.setVelocityX(200);
+      this.player.flipX = false;
+      this.player.anims.play('walk_sideways', true);
     } else if (this.keys.A.isDown || this.keys.left.isDown) {
       this.player.setVelocityX(-200);
+      this.player.flipX = true;
+      this.player.anims.play('walk_sideways', true);
     } else {
       this.player.setVelocityX(0);
     }
