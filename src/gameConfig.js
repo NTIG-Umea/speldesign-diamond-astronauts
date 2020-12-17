@@ -6,7 +6,7 @@ import EndScene from './EndScene';
 import gameOptions from './gameOptions';
 
 export default {
-  type: Phaser.CANVAS,
+  type: Phaser.WEBGL,
   width: gameOptions.mazeWidth * gameOptions.tileSize,
   height: gameOptions.mazeHeight * gameOptions.tileSize,
   backgroundColor: 0xaaaaaa,

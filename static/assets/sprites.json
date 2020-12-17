@@ -1,0 +1,83 @@
+{
+	"textures": [
+		{
+			"image": "sprites.png",
+			"normalMap": "sprites-normal.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 38,
+				"h": 124
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Santa_64",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 2,
+						"w": 34,
+						"h": 48
+					},
+					"frame": {
+						"x": 2,
+						"y": 2,
+						"w": 34,
+						"h": 48
+					}
+				},
+				{
+					"filename": "Stone_floor",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 2,
+						"y": 54,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "brickwall",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 2,
+						"y": 90,
+						"w": 32,
+						"h": 32
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://free-tex-packer.com",
+		"version": "0.6.6"
+	}
+}
