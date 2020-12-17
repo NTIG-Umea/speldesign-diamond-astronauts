@@ -12,10 +12,10 @@ export default class BootScene extends Phaser.Scene {
 
     this.load.multiatlas('sprites', 'assets/sprites.json', 'assets/');
 
-    this.load.image('santa', [images.santa, images.santa]);
-    this.load.image('maze-floor', [images.maze_floor, images.maze_floor]);
-    this.load.image('maze-top', [images.maze_top, images.maze_top]);
-    this.load.image('maze-floor-red-tint', [images.maze_floor_red_tint, images.maze_floor_red_tint]);
+    // this.load.image('santa', [images.santa, images.normal]);
+    // this.load.image('maze-floor', [images.maze_floor, images.maze_floor]);
+    // this.load.image('maze-top', [images.maze_top, images.maze_top]);
+    // this.load.image('maze-floor-red-tint', [images.maze_floor_red_tint, images.maze_floor_red_tint]);
 
     this.load.on('progress', function (progress) {
       bar.setScale(progress, 1);
