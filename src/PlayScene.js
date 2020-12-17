@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import mazeGenerator from './mazeGenerator';
 import gameOptions from './gameOptions';
-import drawMaze from './drawMaze';
 import EasyStar from 'easystarjs';
 import HealthBar from './HelthBar';
 
@@ -17,9 +16,7 @@ export default class PlayScene extends Phaser.Scene {
     // ladda image för pipeline
     this.add.image(0, 0, 'sprites').setPipeline('Light2D');
 
-    // this.mazeGraphics = this.add.graphics();
     this.maze = mazeGenerator();
-    // this.mazeGraphics = drawMaze(this.maze, this.mazeGraphics);
 
     this.mazeGraphicsNew = [];
 
@@ -69,11 +66,6 @@ export default class PlayScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(this.playerX, this.playerY, 'sprites', 'Santa_64').setScale(0.5).refreshBody();
     this.player.setSize(34, 48);
 
-    // this.input.on('pointermove', () => {
-    //   this.playerLight.x = this.player.x;
-    //   this.playerLight.y = this.player.y;
-    // });
-
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
         if (this.mazeGraphicsNew[i][j].frame.name === 'brickwall') {
@@ -103,10 +95,9 @@ export default class PlayScene extends Phaser.Scene {
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
 
-    this.playerLight = this.lights.addLight(this.player.x, this.player.y, 120, 0xffffff, 3).setScrollFactor(1,1);
+    this.playerLight = this.lights.addLight(this.player.x, this.player.y, 120, 0xffffff, 3).setScrollFactor(1, 1);
     this.lights.enable();
     this.lights.setAmbientColor(0x303030);
-
   }
 
   clearLevel () {
