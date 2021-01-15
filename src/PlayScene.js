@@ -9,6 +9,7 @@ export default class PlayScene extends Phaser.Scene {
     super({ key: 'play' });
     this.score = 0;
     this.lightSinAngle = 70;
+    this.hbIncrement = 0;
   }
   preload () {
   }
@@ -61,7 +62,7 @@ export default class PlayScene extends Phaser.Scene {
             this.fireplaces.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'fireplace_frame_1').setSize(3 * gameOptions.tileSize, 3 * gameOptions.tileSize).setPipeline('Light2D');
+              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 3 * gameOptions.tileSize).setPipeline('Light2D');
           }
         }
       }
@@ -153,6 +154,12 @@ export default class PlayScene extends Phaser.Scene {
     this.playerLight = this.lights.addLight(this.player.x, this.player.y, 130, 0xffffff, 3).setScrollFactor(1, 1);
     this.lights.enable();
     this.lights.setAmbientColor(0x000000);
+
+    // check if the player is near a fireplace
+    // if it is, increase the health bar in the next update
+    for (const currentFireplace of this.fireplaces.children.entries) {
+      this.physics.add.overlap(this.player, currentFireplace, () => { this.hbIncrement += 0.1; }, null, this);
+    }
   }
 
   clearLevel () {
@@ -221,13 +228,18 @@ export default class PlayScene extends Phaser.Scene {
 
     let worldView = this.cameras.main.worldView;
     this.playerHB.setPosition(worldView.x, worldView.y);
-    // decrease player health as game goes on
-    this.playerHB.decrease(gameOptions.damagePerUpdate);
+
+    // update the players health
+    this.hbIncrement -= gameOptions.damagePerUpdate;
+    this.playerHB.change(this.hbIncrement);
+    this.hbIncrement = 0;
+    this.playerHB.draw();
+
+    // check if the player has died
     if (this.playerHB.value <= 0) {
       alert(`It's freezing cold and you didn't keep warm! 🥶 Your score was: ${this.score}`);
       this.scene.switch('end');
     }
-    this.playerHB.draw();
   }
 
   getRandomArbitrary (min, max) {
