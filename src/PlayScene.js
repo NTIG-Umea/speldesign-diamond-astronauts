@@ -170,7 +170,6 @@ export default class PlayScene extends Phaser.Scene {
     gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
     gameOptions.mazeEndX = gameOptions.mazeWidth - 2;
     gameOptions.mazeEndY = gameOptions.mazeHeight - 2;
-    gameOptions.damagePerUpdate *= gameOptions.damageModifier;
     this.scene.start('play');
   }
 
