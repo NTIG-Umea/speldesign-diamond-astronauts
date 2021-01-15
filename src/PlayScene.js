@@ -50,6 +50,23 @@ export default class PlayScene extends Phaser.Scene {
       }
     }
 
+    // spawn fireplaces
+    // they have a certain % chance of spawning
+    this.fireplaces = this.physics.add.staticGroup();
+
+    for (let y = 0; y < gameOptions.mazeHeight; y++) {
+      for (let x = 0; x < gameOptions.mazeWidth; x++) {
+        if (this.mazeGraphicsNew[y][x].frame.name.includes('floor')) {
+          if (Math.random() < gameOptions.fireplaceSpawnChance) {
+            this.fireplaces.create(
+              x * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              y * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              'spritesheet', 'fireplace_frame_1').setPipeline('Light2D');
+          }
+        }
+      }
+    }
+
     // eslint-disable-next-line new-cap
     this.easystar = new EasyStar.js();
     this.easystar.setGrid(this.maze);
