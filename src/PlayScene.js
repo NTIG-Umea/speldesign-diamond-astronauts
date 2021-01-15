@@ -61,7 +61,7 @@ export default class PlayScene extends Phaser.Scene {
             this.fireplaces.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'fireplace_frame_1').setPipeline('Light2D');
+              'spritesheet', 'fireplace_frame_1').setSize(3 * gameOptions.tileSize, 3 * gameOptions.tileSize).setPipeline('Light2D');
           }
         }
       }
