@@ -14,6 +14,26 @@ export default class HealthBar {
     scene.add.existing(this.bar);
   }
 
+  change (amount) {
+    this.value += amount;
+
+    if (this.value > 100) {
+      this.value = 100;
+    } else if (this.value < 0) {
+      this.value = 0;
+    }
+  }
+
+  increase (amount) {
+    this.value += amount;
+
+    if (this.value > 100) {
+      this.value = 100;
+    }
+
+    // this.draw();
+  }
+
   decrease (amount) {
     this.value -= amount;
 
@@ -21,7 +41,7 @@ export default class HealthBar {
       this.value = 0;
     }
 
-    this.draw();
+    // this.draw();
 
     return (this.value === 0);
   }
