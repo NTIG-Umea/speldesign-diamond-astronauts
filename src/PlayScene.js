@@ -101,6 +101,7 @@ export default class PlayScene extends Phaser.Scene {
       }
     }
 
+    // checks if the player has reached the end of the maze
     this.physics.add.overlap(
       this.player,
       this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX],
