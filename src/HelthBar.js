@@ -7,7 +7,7 @@ export default class HealthBar {
     this.x = x;
     this.y = y;
     this.value = 100;
-    this.p = 76 / 100;
+    this.p = 76.1 / 100;
 
     this.draw();
 
