@@ -51,9 +51,10 @@ export default class PlayScene extends Phaser.Scene {
       }
     }
 
-    // spawn fireplaces
+    // spawn fireplaces and torches
     // they have a certain % chance of spawning
     this.fireplaces = this.physics.add.staticGroup();
+    this.torches = this.physics.add.staticGroup();
 
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
@@ -63,6 +64,13 @@ export default class PlayScene extends Phaser.Scene {
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
               'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 3 * gameOptions.tileSize).setPipeline('Light2D');
+          }
+        } else if (this.mazeGraphicsNew[y][x].frame.name.includes('wall_ice_half_dark')) {
+          if (Math.random() < gameOptions.torchesSpawnChance) {
+            this.torches.create(
+              x * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              y * gameOptions.tileSize + (gameOptions.tileSize / 2),
+              'spritesheet', 'torch_frame_1').setPipeline('Light2D');
           }
         }
       }
