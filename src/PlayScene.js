@@ -159,6 +159,13 @@ export default class PlayScene extends Phaser.Scene {
       repeat: -1
     });
 
+    this.anims.create({
+      key: 'torch_flicker',
+      frames: this.anims.generateFrameNames('spritesheet', { frames: ['torch_frame_1', 'torch_frame_2'] }),
+      frameRate: 6,
+      repeat: -1
+    });
+
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
@@ -175,7 +182,7 @@ export default class PlayScene extends Phaser.Scene {
     // if it is, increase the health bar in the next update
     for (const currentElement of this.warmingElements) {
       this.physics.add.overlap(this.player, currentElement, currentElement.frame.name.includes('fireplace') ? () => { this.hbIncrement += 0.1; } : () => { this.hbIncrement += 0.05; }, null, this);
-      currentElement.anims.play(currentElement.frame.name.includes('fireplace') ? 'fireplace_flicker' : '');
+      currentElement.anims.play(currentElement.frame.name.includes('fireplace') ? 'fireplace_flicker' : 'torch_flicker');
     }
   }
 
