@@ -53,6 +53,7 @@ export default class PlayScene extends Phaser.Scene {
 
     // spawn fireplaces and torches
     // they have a certain % chance of spawning
+    this.warmingElements = [];
     this.fireplaces = this.physics.add.staticGroup();
     this.torches = this.physics.add.staticGroup();
 
@@ -60,17 +61,17 @@ export default class PlayScene extends Phaser.Scene {
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.mazeGraphicsNew[y][x].frame.name.includes('floor')) {
           if (Math.random() < gameOptions.fireplaceSpawnChance) {
-            this.fireplaces.create(
+            this.warmingElements.push(this.fireplaces.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D');
+              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D'));
           }
         } else if (this.mazeGraphicsNew[y][x].frame.name.includes('wall_ice_half_dark')) {
           if (Math.random() < gameOptions.torchesSpawnChance) {
-            this.torches.create(
+            this.warmingElements.push(this.torches.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'torch_frame_1').setSize(2 * gameOptions.tileSize, 2 * gameOptions.tileSize).setPipeline('Light2D');
+              'spritesheet', 'torch_frame_1').setSize(2 * gameOptions.tileSize, 2 * gameOptions.tileSize).setPipeline('Light2D'));
           }
         }
       }
@@ -170,11 +171,11 @@ export default class PlayScene extends Phaser.Scene {
     this.lights.enable();
     this.lights.setAmbientColor(0x000000);
 
-    // check if the player is near a fireplace
+    // check if the player is near a warming element
     // if it is, increase the health bar in the next update
-    for (const currentFireplace of this.fireplaces.children.entries) {
-      this.physics.add.overlap(this.player, currentFireplace, () => { this.hbIncrement += 0.1; }, null, this);
-      currentFireplace.anims.play('fireplace_flicker');
+    for (const currentElement of this.warmingElements) {
+      this.physics.add.overlap(this.player, currentElement, currentElement.frame.name.includes('fireplace') ? () => { this.hbIncrement += 0.1; } : () => { this.hbIncrement += 0.05; }, null, this);
+      currentElement.anims.play(currentElement.frame.name.includes('fireplace') ? 'fireplace_flicker' : '');
     }
   }
 
