@@ -70,7 +70,7 @@ export default class PlayScene extends Phaser.Scene {
             this.torches.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'torch_frame_1').setPipeline('Light2D');
+              'spritesheet', 'torch_frame_1').setSize(2 * gameOptions.tileSize, 2 * gameOptions.tileSize).setPipeline('Light2D');
           }
         }
       }
