@@ -63,7 +63,7 @@ export default class PlayScene extends Phaser.Scene {
             this.fireplaces.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 3 * gameOptions.tileSize).setPipeline('Light2D');
+              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D');
           }
         } else if (this.mazeGraphicsNew[y][x].frame.name.includes('wall_ice_half_dark')) {
           if (Math.random() < gameOptions.torchesSpawnChance) {
