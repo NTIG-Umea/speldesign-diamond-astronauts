@@ -190,7 +190,11 @@ export default class PlayScene extends Phaser.Scene {
           if (this.mazeGraphicsNew[y][x].hasOwnProperty(key)) {
             if (key === 'fireplace' || key === 'torch') {
               let currentElement = this.mazeGraphicsNew[y][x][key];
-              this.physics.add.overlap(this.player, this.mazeGraphicsNew[y][x][key], key === 'fireplace' ? () => { this.hbIncrement += 0.1; } : () => { this.hbIncrement += 0.05; }, null, this);
+              this.physics.add.overlap(this.player, this.mazeGraphicsNew[y][x][key], key === 'fireplace' ? () => {
+                this.hbIncrement += 0.1;
+              } : () => {
+                this.hbIncrement += 0.05;
+              }, null, this);
               currentElement.anims.play(key === 'fireplace' ? 'fireplace_flicker' : 'torch_flicker');
             }
           }
