@@ -11,6 +11,6 @@ export default {
   mazeSizeIncrement: 10,
   damagePerUpdate: 0.01,
   damageModifier: 0.5,
-  fireplaceSpawnChance: 0.05,
-  torchesSpawnChance: 0.05
+  fireplaceSpawnChance: 0.01,
+  torchesSpawnChance: 0.02
 };
