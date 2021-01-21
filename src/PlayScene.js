@@ -28,21 +28,22 @@ export default class PlayScene extends Phaser.Scene {
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       this.mazeGraphicsNew[y] = [];
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
+        this.mazeGraphicsNew[y][x] = {};
         if (this.maze[y][x] === 1) {
           if (y + 1 < gameOptions.mazeHeight && this.maze[y + 1][x] === 0) {
-            this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
+            this.mazeGraphicsNew[y][x].halfWall = this.mazeWalls.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
               'spritesheet', 'wall_ice_half_dark').setPipeline('Light2D').setScale(1.05);
-            this.mazeGraphicsNew[y][x].setRotation(-1 * Math.PI / 2);
+            this.mazeGraphicsNew[y][x].halfWall.setRotation(-1 * Math.PI / 2);
           } else {
-            this.mazeGraphicsNew[y][x] = this.mazeWalls.create(
+            this.mazeGraphicsNew[y][x].wall = this.mazeWalls.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
               'spritesheet', 'wall_ice_dark').setPipeline('Light2D').setScale(1.05);
           }
         } else {
-          this.mazeGraphicsNew[y][x] = this.mazeFloorTiles.create(
+          this.mazeGraphicsNew[y][x].floor = this.mazeFloorTiles.create(
             x * gameOptions.tileSize + (gameOptions.tileSize / 2),
             y * gameOptions.tileSize + (gameOptions.tileSize / 2),
             'spritesheet', Math.random() > 0.5 ? 'floor_stone_cracked' : 'floor_stone')
@@ -59,14 +60,14 @@ export default class PlayScene extends Phaser.Scene {
 
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
-        if (this.mazeGraphicsNew[y][x].frame.name.includes('floor')) {
+        if (this.mazeGraphicsNew[y][x].hasOwnProperty('floor')) {
           if (Math.random() < gameOptions.fireplaceSpawnChance) {
             this.warmingElements.push(this.fireplaces.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
               'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D'));
           }
-        } else if (this.mazeGraphicsNew[y][x].frame.name.includes('wall_ice_half_dark')) {
+        } else if (this.mazeGraphicsNew[y][x].hasOwnProperty('halfWall')) {
           if (Math.random() < gameOptions.torchesSpawnChance) {
             this.warmingElements.push(this.torches.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
@@ -105,8 +106,11 @@ export default class PlayScene extends Phaser.Scene {
 
     for (let i = 0; i < gameOptions.mazeHeight; i++) {
       for (let j = 0; j < gameOptions.mazeWidth; j++) {
-        if (this.mazeGraphicsNew[i][j].frame.name.includes('wall')) {
-          this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j]);
+        let keys = Object.keys(this.mazeGraphicsNew[i][j]);
+        if (keys.includes('wall')) {
+          this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j].wall);
+        } else if (keys.includes('halfWall')) {
+          this.physics.add.collider(this.player, this.mazeGraphicsNew[i][j].halfWall);
         }
       }
     }
@@ -114,7 +118,7 @@ export default class PlayScene extends Phaser.Scene {
     // checks if the player has reached the end of the maze
     this.physics.add.overlap(
       this.player,
-      this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX],
+      this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX].floor,
       this.clearLevel,
       null,
       this
@@ -202,7 +206,7 @@ export default class PlayScene extends Phaser.Scene {
       delay: 0,
       callback: function () {
         if (i < path.length) {
-          this.mazeGraphicsNew[path[i].y][path[i].x].setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
+          this.mazeGraphicsNew[path[i].y][path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
           i++;
         } else {
           // this.scene.start("PlayGame");
