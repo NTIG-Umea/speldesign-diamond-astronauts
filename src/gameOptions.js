@@ -10,7 +10,6 @@ export default {
   mazeEndY: 31 - 2,
   mazeSizeIncrement: 10,
   damagePerUpdate: 0.025,
-  damageModifier: 0.5,
   fireplaceSpawnChance: 0.01,
   torchesSpawnChance: 0.02
 };
