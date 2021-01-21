@@ -62,17 +62,17 @@ export default class PlayScene extends Phaser.Scene {
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.mazeGraphicsNew[y][x].hasOwnProperty('floor')) {
           if (Math.random() < gameOptions.fireplaceSpawnChance) {
-            this.warmingElements.push(this.fireplaces.create(
+            this.mazeGraphicsNew[y][x].fireplace = this.fireplaces.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D'));
+              'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D');
           }
         } else if (this.mazeGraphicsNew[y][x].hasOwnProperty('halfWall')) {
           if (Math.random() < gameOptions.torchesSpawnChance) {
-            this.warmingElements.push(this.torches.create(
+            this.mazeGraphicsNew[y][x].torch = this.torches.create(
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
-              'spritesheet', 'torch_frame_1').setSize(2 * gameOptions.tileSize, 2 * gameOptions.tileSize).setPipeline('Light2D'));
+              'spritesheet', 'torch_frame_1').setSize(2 * gameOptions.tileSize, 2 * gameOptions.tileSize).setPipeline('Light2D');
           }
         }
       }
@@ -184,9 +184,18 @@ export default class PlayScene extends Phaser.Scene {
 
     // check if the player is near a warming element
     // if it is, increase the health bar in the next update
-    for (const currentElement of this.warmingElements) {
-      this.physics.add.overlap(this.player, currentElement, currentElement.frame.name.includes('fireplace') ? () => { this.hbIncrement += 0.1; } : () => { this.hbIncrement += 0.05; }, null, this);
-      currentElement.anims.play(currentElement.frame.name.includes('fireplace') ? 'fireplace_flicker' : 'torch_flicker');
+    for (let y = 0; y < gameOptions.mazeHeight; y++) {
+      for (let x = 0; x < gameOptions.mazeWidth; x++) {
+        for (const key in this.mazeGraphicsNew[y][x]) {
+          if (this.mazeGraphicsNew[y][x].hasOwnProperty(key)) {
+            if (key === 'fireplace' || key === 'torch') {
+              let currentElement = this.mazeGraphicsNew[y][x][key];
+              this.physics.add.overlap(this.player, this.mazeGraphicsNew[y][x][key], key === 'fireplace' ? () => { this.hbIncrement += 0.1; } : () => { this.hbIncrement += 0.05; }, null, this);
+              currentElement.anims.play(key === 'fireplace' ? 'fireplace_flicker' : 'torch_flicker');
+            }
+          }
+        }
+      }
     }
   }
 
