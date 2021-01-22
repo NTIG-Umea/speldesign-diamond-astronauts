@@ -21,7 +21,27 @@ export default class PlayScene extends Phaser.Scene {
     // ladda image för pipeline
     this.add.image(0, 0, 'spritesheet').setPipeline('Light2D');
 
-    this.maze = mazeGenerator();
+    this.isValidMaze = false;
+    while (!this.isValidMaze) {
+      this.maze = mazeGenerator();
+      if (gameOptions.mazeEndX === 0) {
+        if (this.maze[gameOptions.mazeEndY][gameOptions.mazeEndX + 1] !== 1) {
+          this.isValidMaze = true;
+        }
+      } else if (gameOptions.mazeEndX === gameOptions.mazeWidth - 1) {
+        if (this.maze[gameOptions.mazeEndY][gameOptions.mazeEndX - 1] !== 1) {
+          this.isValidMaze = true;
+        }
+      } else if (gameOptions.mazeEndY === gameOptions.mazeHeight - 1) {
+        if (this.maze[gameOptions.mazeEndY - 1][gameOptions.mazeEndX] !== 1) {
+          this.isValidMaze = true;
+        }
+      } else {
+        if (this.maze[gameOptions.mazeEndY + 1][gameOptions.mazeEndX] !== 1) {
+          this.isValidMaze = true;
+        }
+      }
+    }
 
     this.mazeGraphicsNew = [];
 
