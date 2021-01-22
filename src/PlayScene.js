@@ -11,6 +11,7 @@ export default class PlayScene extends Phaser.Scene {
     this.hbIncrement = 0;
     this.deltaUpdate = 0;
     this.lastTime = new Date().getTime();
+    this.path = 0;
 
     this.generateEnd();
   }
@@ -138,6 +139,7 @@ export default class PlayScene extends Phaser.Scene {
       this.rudolphsNoseCoordinate.x * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
       this.rudolphsNoseCoordinate.y * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
       'rudolphs_nose').setPipeline('Light2D');
+    this.rudolphsNose.startTime = Infinity;
 
     // Player stuff
     // centers the player on the current tile
@@ -190,6 +192,7 @@ export default class PlayScene extends Phaser.Scene {
       this.player,
       this.rudolphsNose,
       () => {
+        this.rudolphsNose.startTime = new Date().getTime();
         this.rudolphsNose.destroy(false);
 
         this.easystar.findPath(
@@ -198,13 +201,14 @@ export default class PlayScene extends Phaser.Scene {
           this.rudolphsNoseCoordinate.x,
           this.rudolphsNoseCoordinate.y,
           function (path) {
-            this.drawPath(path);
+            this.path = path;
+            this.drawPath();
           }.bind(this)
         );
         this.easystar.calculate();
 
         // zoom out camera and increase light radius
-        this.cameras.main.zoomTo(2, 1500);
+        this.cameras.main.zoomTo(gameOptions.cameraRudolphZoom, 1500);
         gameOptions.lightRadius *= 1.5;
         this.playerLight.setRadius(gameOptions.lightRadius);
       },
@@ -261,7 +265,7 @@ export default class PlayScene extends Phaser.Scene {
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-    this.cameras.main.setZoom(4);
+    this.cameras.main.setZoom(gameOptions.cameraDefaultZoom);
     this.playerHB = new HealthBar(this, this.cameras.main.worldView.x, this.cameras.main.worldView.y);
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
@@ -316,16 +320,31 @@ export default class PlayScene extends Phaser.Scene {
     this.scene.start('play');
   }
 
-  drawPath (path) {
+  drawPath () {
     let i = 0;
     this.time.addEvent({
       delay: 0,
       callback: function () {
-        if (i < path.length) {
-          this.mazeGraphicsNew[path[i].y][path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
+        if (i < this.path.length) {
+          this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
           i++;
         } else {
           // this.scene.start("PlayGame");
+        }
+      },
+      callbackScope: this,
+      loop: true
+    });
+  }
+
+  removePath () {
+    let i = 0;
+    this.time.addEvent({
+      delay: 0,
+      callback: function () {
+        if (i < this.path.length) {
+          this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', Math.random() < 0.5 ? 'floor_stone_cracked' : 'floor_stone').setPipeline('Light2D');
+          i++;
         }
       },
       callbackScope: this,
@@ -402,6 +421,13 @@ export default class PlayScene extends Phaser.Scene {
           gameOptions.playerSpeed /= gameOptions.playerSpeedBuff;
           this.gingerbreads.splice(this.gingerbreads.indexOf(currentGingerbread), 1);
         }
+      }
+
+      if (currentTime - this.rudolphsNose.startTime >= 7 * 1000) {
+        this.cameras.main.zoomTo(gameOptions.cameraDefaultZoom, 1500);
+        this.playerLight.setRadius(gameOptions.defaultLightRadius);
+        this.removePath();
+        this.rudolphsNose.startTime = Infinity;
       }
     }
 

@@ -19,5 +19,7 @@ export default {
   playerSpeed: 200,
   playerDefaultSpeed: 200,
   playerSpeedBuff: 1.5,
-  gingerbreadSpawnChance: 0.005
+  gingerbreadSpawnChance: 0.005,
+  cameraDefaultZoom: 4,
+  cameraRudolphZoom: 2
 };
