@@ -347,7 +347,6 @@ export default class PlayScene extends Phaser.Scene {
 
     // check if the player has died
     if (this.playerHB.value <= 0) {
-      alert(`It's freezing cold and you didn't keep warm! 🥶 Your score was: ${this.game.global.score}`);
       this.scene.switch('end');
     }
   }
