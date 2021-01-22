@@ -7,7 +7,6 @@ import HealthBar from './HelthBar';
 export default class PlayScene extends Phaser.Scene {
   constructor () {
     super({ key: 'play' });
-    this.score = 0;
     this.lightSinAngle = 70;
     this.hbIncrement = 0;
   }
@@ -204,8 +203,8 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   clearLevel () {
-    this.score++;
-    alert(`Good job, you cleared this maze! 🥳 Your score is: ${this.score}`); // should use some Phaser implementation of this
+    this.game.global.score++;
+    alert(`Good job, you cleared this maze! 🥳 Your score is: ${this.game.global.score}`); // should use some Phaser implementation of this
     gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
     gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
     gameOptions.mazeEndX = gameOptions.mazeWidth - 2;
@@ -278,7 +277,7 @@ export default class PlayScene extends Phaser.Scene {
 
     // check if the player has died
     if (this.playerHB.value <= 0) {
-      alert(`It's freezing cold and you didn't keep warm! 🥶 Your score was: ${this.score}`);
+      alert(`It's freezing cold and you didn't keep warm! 🥶 Your score was: ${this.game.global.score}`);
       this.scene.switch('end');
     }
   }

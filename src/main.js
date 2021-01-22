@@ -11,6 +11,7 @@ window.onload = function () {
 function newGame () {
   if (game) return;
   game = new Phaser.Game(gameConfig);
+  game.global = { score: 0 };
 }
 
 function destroyGame () {
