@@ -14,6 +14,8 @@ export default class MenuScene extends Phaser.Scene {
       fontSize: 38
     }).setOrigin(0.5, 0.5);
 
+    this.cameras.main.setBackgroundColor('#000000');
+
     this.input.on('pointerdown', function () {
       this.scene.start('play');
     }, this);
