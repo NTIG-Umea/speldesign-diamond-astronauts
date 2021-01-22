@@ -112,22 +112,25 @@ export default class PlayScene extends Phaser.Scene {
     this.easystar = new EasyStar.js();
     this.easystar.setGrid(this.maze);
     this.easystar.setAcceptableTiles([0]);
-    this.easystar.findPath(
-      gameOptions.mazeEndX,
-      gameOptions.mazeEndY,
-      1,
-      1,
-      function (path) {
-        this.drawPath(path);
-      }.bind(this)
-    );
-    this.easystar.calculate();
 
     // add the gift at the end of the maze
     this.gift = this.physics.add.sprite(
       gameOptions.mazeEndX * gameOptions.tileSize + (gameOptions.tileSize / 2),
       gameOptions.mazeEndY * gameOptions.tileSize + (gameOptions.tileSize / 2),
       'gift').setPipeline('Light2D');
+
+    // spawn rudolphs nose powerup
+    let randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
+    let randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
+    while (!this.mazeGraphicsNew[randomY][randomX].hasOwnProperty('floor')) {
+      randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
+      randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
+    }
+
+    this.rudolphsNose = this.physics.add.sprite(
+      randomX * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      randomY * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      'rudolphs_nose').setPipeline('Light2D');
 
     // Player stuff
     // centers the player on the current tile
@@ -152,11 +155,31 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     // checks if the player has reached the end of the maze
-
     this.physics.add.overlap(
       this.player,
       this.gift,
       this.clearLevel,
+      null,
+      this
+    );
+
+    // show path out when you pick up the nose
+    this.physics.add.overlap(
+      this.player,
+      this.rudolphsNose,
+      () => {
+        this.rudolphsNose.destroy(false);
+        this.easystar.findPath(
+          gameOptions.mazeEndX,
+          gameOptions.mazeEndY,
+          (this.rudolphsNose.x - (gameOptions.tileSize / 2)) / gameOptions.tileSize,
+          (this.rudolphsNose.y - (gameOptions.tileSize / 2)) / gameOptions.tileSize,
+          function (path) {
+            this.drawPath(path);
+          }.bind(this)
+        );
+        this.easystar.calculate();
+      },
       null,
       this
     );
