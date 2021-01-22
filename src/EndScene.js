@@ -17,7 +17,7 @@ export default class EndScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#000000');
 
     this.input.on('pointerdown', function () {
-      this.scene.switch('menu');
+      window.location = location;
     }, this);
   }
 }

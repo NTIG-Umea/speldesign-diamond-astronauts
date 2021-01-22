@@ -11,6 +11,8 @@ export default class BootScene extends Phaser.Scene {
 
     this.load.multiatlas('spritesheet', 'assets/spritesheet.json', 'assets/');
     this.load.image('gift', ['assets/gift.png', 'assets/gift_normal.png']);
+    this.load.image('rudolphs_nose', ['assets/rudolphs_nose.png', 'assets/rudolphs_nose_normal.png']);
+    this.load.image('gingerbread', ['assets/gingerbread.png', 'assets/gingerbread_normal.png']);
 
     this.load.on('progress', function (progress) {
       bar.setScale(progress, 1);

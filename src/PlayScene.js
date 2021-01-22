@@ -11,6 +11,7 @@ export default class PlayScene extends Phaser.Scene {
     this.hbIncrement = 0;
     this.deltaUpdate = 0;
     this.lastTime = new Date().getTime();
+    this.path = 0;
 
     this.generateEnd();
   }
@@ -88,6 +89,8 @@ export default class PlayScene extends Phaser.Scene {
     this.fireplaces = this.physics.add.staticGroup();
     this.torches = this.physics.add.staticGroup();
 
+    this.gingerbreads = [];
+
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.mazeGraphicsNew[y][x].hasOwnProperty('floor')) {
@@ -96,6 +99,17 @@ export default class PlayScene extends Phaser.Scene {
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
               'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D');
+          }
+
+          // spawn gingerbreads
+          if (Math.random() < gameOptions.gingerbreadSpawnChance) {
+            let gingerbreadCoordinate = this.getRandomMazeCoordinate();
+            let currentGingerbread = this.physics.add.sprite(
+              gingerbreadCoordinate.x * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+              gingerbreadCoordinate.y * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+              'gingerbread').setPipeline('Light2D');
+            currentGingerbread.startTime = Infinity;
+            this.gingerbreads.push(currentGingerbread);
           }
         } else if (this.mazeGraphicsNew[y][x].hasOwnProperty('halfWall')) {
           if (Math.random() < gameOptions.torchesSpawnChance) {
@@ -112,22 +126,20 @@ export default class PlayScene extends Phaser.Scene {
     this.easystar = new EasyStar.js();
     this.easystar.setGrid(this.maze);
     this.easystar.setAcceptableTiles([0]);
-    this.easystar.findPath(
-      gameOptions.mazeEndX,
-      gameOptions.mazeEndY,
-      1,
-      1,
-      function (path) {
-        this.drawPath(path);
-      }.bind(this)
-    );
-    this.easystar.calculate();
 
     // add the gift at the end of the maze
     this.gift = this.physics.add.sprite(
       gameOptions.mazeEndX * gameOptions.tileSize + (gameOptions.tileSize / 2),
       gameOptions.mazeEndY * gameOptions.tileSize + (gameOptions.tileSize / 2),
       'gift').setPipeline('Light2D');
+
+    // spawn rudolphs nose powerup
+    this.rudolphsNoseCoordinate = this.getRandomMazeCoordinate();
+    this.rudolphsNose = this.physics.add.sprite(
+      this.rudolphsNoseCoordinate.x * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+      this.rudolphsNoseCoordinate.y * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+      'rudolphs_nose').setPipeline('Light2D');
+    this.rudolphsNose.startTime = Infinity;
 
     // Player stuff
     // centers the player on the current tile
@@ -152,11 +164,54 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     // checks if the player has reached the end of the maze
-
     this.physics.add.overlap(
       this.player,
       this.gift,
       this.clearLevel,
+      null,
+      this
+    );
+
+    // increase speed when player eats cookie
+    for (const currentGingerbread of this.gingerbreads) {
+      this.physics.add.overlap(
+        this.player,
+        currentGingerbread,
+        () => {
+          currentGingerbread.startTime = new Date().getTime();
+          currentGingerbread.destroy(false);
+          gameOptions.playerSpeed *= gameOptions.playerSpeedBuff;
+        },
+        null,
+        this
+      );
+    }
+
+    // show path out when the player picks up the nose
+    this.physics.add.overlap(
+      this.player,
+      this.rudolphsNose,
+      () => {
+        this.rudolphsNose.startTime = new Date().getTime();
+        this.rudolphsNose.destroy(false);
+
+        this.easystar.findPath(
+          gameOptions.mazeEndX,
+          gameOptions.mazeEndY,
+          this.rudolphsNoseCoordinate.x,
+          this.rudolphsNoseCoordinate.y,
+          function (path) {
+            this.path = path;
+            this.drawPath();
+          }.bind(this)
+        );
+        this.easystar.calculate();
+
+        // zoom out camera and increase light radius
+        this.cameras.main.zoomTo(gameOptions.cameraRudolphZoom, 1500);
+        gameOptions.lightRadius *= 1.5;
+        this.playerLight.setRadius(gameOptions.lightRadius);
+      },
       null,
       this
     );
@@ -210,12 +265,12 @@ export default class PlayScene extends Phaser.Scene {
     // Camera stuff
     this.cameras.main.setBounds(0, 0, gameOptions.mazeWidth * gameOptions.tileSize, gameOptions.mazeHeight * gameOptions.tileSize);
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-    this.cameras.main.setZoom(4);
+    this.cameras.main.setZoom(gameOptions.cameraDefaultZoom);
     this.playerHB = new HealthBar(this, this.cameras.main.worldView.x, this.cameras.main.worldView.y);
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
 
-    this.playerLight = this.lights.addLight(this.player.x, this.player.y, 130, 0xffffff, 3).setScrollFactor(1, 1);
+    this.playerLight = this.lights.addLight(this.player.x, this.player.y, gameOptions.lightRadius, 0xffffff, 3).setScrollFactor(1, 1);
     this.lights.enable();
     this.lights.setAmbientColor(0x000000);
 
@@ -258,21 +313,38 @@ export default class PlayScene extends Phaser.Scene {
     gameOptions.fireplaceSpawnChance *= gameOptions.warmingElementsDecrement;
     gameOptions.torchesSpawnChance *= gameOptions.warmingElementsDecrement;
 
+    gameOptions.lightRadius = gameOptions.defaultLightRadius;
+
     this.generateEnd();
 
     this.scene.start('play');
   }
 
-  drawPath (path) {
+  drawPath () {
     let i = 0;
     this.time.addEvent({
       delay: 0,
       callback: function () {
-        if (i < path.length) {
-          this.mazeGraphicsNew[path[i].y][path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
+        if (i < this.path.length) {
+          this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
           i++;
         } else {
           // this.scene.start("PlayGame");
+        }
+      },
+      callbackScope: this,
+      loop: true
+    });
+  }
+
+  removePath () {
+    let i = 0;
+    this.time.addEvent({
+      delay: 0,
+      callback: function () {
+        if (i < this.path.length) {
+          this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', Math.random() < 0.5 ? 'floor_stone_cracked' : 'floor_stone').setPipeline('Light2D');
+          i++;
         }
       },
       callbackScope: this,
@@ -294,21 +366,21 @@ export default class PlayScene extends Phaser.Scene {
 
   update () {
     if (this.keys.W.isDown || this.keys.up.isDown) {
-      this.player.setVelocityY(-200);
+      this.player.setVelocityY(-1 * gameOptions.playerSpeed);
       this.player.anims.play('walk_up', true);
     } else if (this.keys.S.isDown || this.keys.down.isDown) {
-      this.player.setVelocityY(200);
+      this.player.setVelocityY(gameOptions.playerSpeed);
       this.player.anims.play('walk_down', true);
     } else {
       this.player.setVelocityY(0);
     }
 
     if (this.keys.D.isDown || this.keys.right.isDown) {
-      this.player.setVelocityX(200);
+      this.player.setVelocityX(gameOptions.playerSpeed);
       this.player.flipX = false;
       this.player.anims.play('walk_sideways', true);
     } else if (this.keys.A.isDown || this.keys.left.isDown) {
-      this.player.setVelocityX(-200);
+      this.player.setVelocityX(-1 * gameOptions.playerSpeed);
       this.player.flipX = true;
       this.player.anims.play('walk_sideways', true);
     } else {
@@ -330,7 +402,7 @@ export default class PlayScene extends Phaser.Scene {
       } else if (this.lightSinAngle < 70) {
         this.lightSinAngle = 70;
       }
-      this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * 130);
+      this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * gameOptions.lightRadius);
 
       this.playerLight.x = this.player.x;
       this.playerLight.y = this.player.y;
@@ -343,13 +415,36 @@ export default class PlayScene extends Phaser.Scene {
       this.playerHB.change(this.hbIncrement);
       this.hbIncrement = 0;
       this.playerHB.draw();
+
+      for (const currentGingerbread of this.gingerbreads) {
+        if (currentTime - currentGingerbread.startTime >= 10 * 1000) {
+          gameOptions.playerSpeed /= gameOptions.playerSpeedBuff;
+          this.gingerbreads.splice(this.gingerbreads.indexOf(currentGingerbread), 1);
+        }
+      }
+
+      if (currentTime - this.rudolphsNose.startTime >= 7 * 1000) {
+        this.cameras.main.zoomTo(gameOptions.cameraDefaultZoom, 1500);
+        this.playerLight.setRadius(gameOptions.defaultLightRadius);
+        this.removePath();
+        this.rudolphsNose.startTime = Infinity;
+      }
     }
 
     // check if the player has died
     if (this.playerHB.value <= 0) {
-      alert(`It's freezing cold and you didn't keep warm! 🥶 Your score was: ${this.game.global.score}`);
       this.scene.switch('end');
     }
+  }
+
+  getRandomMazeCoordinate () {
+    let randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
+    let randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
+    while (!this.mazeGraphicsNew[randomY][randomX].hasOwnProperty('floor')) {
+      randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
+      randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
+    }
+    return { x: randomX, y: randomY };
   }
 
   getRandomArbitrary (min, max) {
