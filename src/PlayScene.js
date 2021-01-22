@@ -12,17 +12,7 @@ export default class PlayScene extends Phaser.Scene {
     this.deltaUpdate = 0;
     this.lastTime = new Date().getTime();
 
-    // generate a random end for the maze
-    // close to the edges
-    if (Math.random() > 0.5) {
-      gameOptions.mazeEndX = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeWidth - 1));
-      gameOptions.mazeEndY = Math.random() > 0.5 ? gameOptions.mazeHeight - 2 : 1;
-    } else {
-      gameOptions.mazeEndX = Math.random() > 0.5 ? gameOptions.mazeWidth - 2 : 1;
-      gameOptions.mazeEndY = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeHeight - 1));
-    }
-
-    console.log(gameOptions.mazeEndX, gameOptions.mazeEndY);
+    this.generateEnd();
   }
   preload () {
   }
@@ -65,6 +55,13 @@ export default class PlayScene extends Phaser.Scene {
       }
     }
 
+    // replace the wall at the end of the maze with a floor
+    this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX] = { floor: this.mazeFloorTiles.create(
+      gameOptions.mazeEndX * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      gameOptions.mazeEndY * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      'spritesheet', Math.random() > 0.5 ? 'floor_stone_cracked' : 'floor_stone')
+      .setPipeline('Light2D').setScale(1.05) };
+
     // spawn fireplaces and torches
     // they have a certain % chance of spawning
     this.warmingElements = [];
@@ -106,6 +103,12 @@ export default class PlayScene extends Phaser.Scene {
     );
     this.easystar.calculate();
 
+    // add the gift at the end of the maze
+    this.gift = this.physics.add.sprite(
+      gameOptions.mazeEndX * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      gameOptions.mazeEndY * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      'gift').setPipeline('Light2D');
+
     // Player stuff
     // centers the player on the current tile
     this.playerX =
@@ -129,9 +132,10 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     // checks if the player has reached the end of the maze
+
     this.physics.add.overlap(
       this.player,
-      this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX].floor,
+      this.gift,
       this.clearLevel,
       null,
       this
@@ -234,6 +238,8 @@ export default class PlayScene extends Phaser.Scene {
     gameOptions.fireplaceSpawnChance *= gameOptions.warmingElementsDecrement;
     gameOptions.torchesSpawnChance *= gameOptions.warmingElementsDecrement;
 
+    this.generateEnd();
+
     this.scene.start('play');
   }
 
@@ -252,6 +258,18 @@ export default class PlayScene extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+  }
+
+  generateEnd () {
+    // generate a random end for the maze
+    // close to the edges
+    if (Math.random() > 0.5) {
+      gameOptions.mazeEndX = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeWidth));
+      gameOptions.mazeEndY = Math.random() > 0.5 ? gameOptions.mazeHeight - 1 : 0;
+    } else {
+      gameOptions.mazeEndX = Math.random() > 0.5 ? gameOptions.mazeWidth - 1 : 0;
+      gameOptions.mazeEndY = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeHeight));
+    }
   }
 
   update () {
