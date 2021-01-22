@@ -128,8 +128,8 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     this.rudolphsNose = this.physics.add.sprite(
-      randomX * gameOptions.tileSize + (gameOptions.tileSize / 2),
-      randomY * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      randomX * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+      randomY * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
       'rudolphs_nose').setPipeline('Light2D');
 
     // Player stuff
@@ -173,8 +173,8 @@ export default class PlayScene extends Phaser.Scene {
         this.easystar.findPath(
           gameOptions.mazeEndX,
           gameOptions.mazeEndY,
-          (this.rudolphsNose.x - (gameOptions.tileSize / 2)) / gameOptions.tileSize,
-          (this.rudolphsNose.y - (gameOptions.tileSize / 2)) / gameOptions.tileSize,
+          Math.round((this.rudolphsNose.x - (gameOptions.tileSize / 2)) / gameOptions.tileSize),
+          Math.round((this.rudolphsNose.y - (gameOptions.tileSize / 2)) / gameOptions.tileSize),
           function (path) {
             this.drawPath(path);
           }.bind(this)
