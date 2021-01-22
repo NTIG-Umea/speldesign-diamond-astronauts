@@ -9,6 +9,8 @@ export default class PlayScene extends Phaser.Scene {
     super({ key: 'play' });
     this.lightSinAngle = 70;
     this.hbIncrement = 0;
+    this.deltaUpdate = 0;
+    this.lastTime = new Date().getTime();
   }
   preload () {
   }
@@ -254,26 +256,35 @@ export default class PlayScene extends Phaser.Scene {
       this.player.setVelocityX(0);
     }
 
-    // flicker light
-    this.lightSinAngle += (Math.random() > 0.5 ? -1 : 1) * this.getRandomArbitrary(0, 0.2);
-    if (this.lightSinAngle > 110) {
-      this.lightSinAngle = 110;
-    } else if (this.lightSinAngle < 70) {
-      this.lightSinAngle = 70;
+    // delta timing
+    let currentTime = new Date().getTime();
+    this.deltaUpdate += (currentTime - this.lastTime) / gameOptions.updateInterval;
+    this.lastTime = currentTime;
+
+    while (this.deltaUpdate >= 1) {
+      this.deltaUpdate--;
+
+      // flicker light
+      this.lightSinAngle += (Math.random() > 0.5 ? -1 : 1) * this.getRandomArbitrary(0, 0.2);
+      if (this.lightSinAngle > 110) {
+        this.lightSinAngle = 110;
+      } else if (this.lightSinAngle < 70) {
+        this.lightSinAngle = 70;
+      }
+      this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * 130);
+
+      this.playerLight.x = this.player.x;
+      this.playerLight.y = this.player.y;
+
+      let worldView = this.cameras.main.worldView;
+      this.playerHB.setPosition(worldView.x, worldView.y);
+
+      // update the players health
+      this.hbIncrement -= gameOptions.damagePerUpdate;
+      this.playerHB.change(this.hbIncrement);
+      this.hbIncrement = 0;
+      this.playerHB.draw();
     }
-    this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * 130);
-
-    this.playerLight.x = this.player.x;
-    this.playerLight.y = this.player.y;
-
-    let worldView = this.cameras.main.worldView;
-    this.playerHB.setPosition(worldView.x, worldView.y);
-
-    // update the players health
-    this.hbIncrement -= gameOptions.damagePerUpdate;
-    this.playerHB.change(this.hbIncrement);
-    this.hbIncrement = 0;
-    this.playerHB.draw();
 
     // check if the player has died
     if (this.playerHB.value <= 0) {
