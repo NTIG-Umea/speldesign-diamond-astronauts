@@ -314,6 +314,7 @@ export default class PlayScene extends Phaser.Scene {
     gameOptions.torchesSpawnChance *= gameOptions.warmingElementsDecrement;
 
     gameOptions.lightRadius = gameOptions.defaultLightRadius;
+    gameOptions.playerSpeed = gameOptions.playerDefaultSpeed;
 
     this.generateEnd();
 
