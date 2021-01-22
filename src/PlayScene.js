@@ -181,7 +181,7 @@ export default class PlayScene extends Phaser.Scene {
         );
         this.easystar.calculate();
 
-        // this.cameras.main.setZoom(3);
+        // zoom out camera and increase light radius
         this.cameras.main.zoomTo(2, 1500);
         gameOptions.lightRadius *= 1.5;
         this.playerLight.setRadius(gameOptions.lightRadius);
