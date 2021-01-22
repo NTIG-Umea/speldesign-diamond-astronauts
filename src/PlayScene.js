@@ -9,6 +9,10 @@ export default class PlayScene extends Phaser.Scene {
     super({ key: 'play' });
     this.lightSinAngle = 70;
     this.hbIncrement = 0;
+    this.deltaUpdate = 0;
+    this.lastTime = new Date().getTime();
+
+    this.generateEnd();
   }
   preload () {
   }
@@ -17,7 +21,27 @@ export default class PlayScene extends Phaser.Scene {
     // ladda image för pipeline
     this.add.image(0, 0, 'spritesheet').setPipeline('Light2D');
 
-    this.maze = mazeGenerator();
+    this.isValidMaze = false;
+    while (!this.isValidMaze) {
+      this.maze = mazeGenerator();
+      if (gameOptions.mazeEndX === 0) {
+        if (this.maze[gameOptions.mazeEndY][gameOptions.mazeEndX + 1] !== 1) {
+          this.isValidMaze = true;
+        }
+      } else if (gameOptions.mazeEndX === gameOptions.mazeWidth - 1) {
+        if (this.maze[gameOptions.mazeEndY][gameOptions.mazeEndX - 1] !== 1) {
+          this.isValidMaze = true;
+        }
+      } else if (gameOptions.mazeEndY === gameOptions.mazeHeight - 1) {
+        if (this.maze[gameOptions.mazeEndY - 1][gameOptions.mazeEndX] !== 1) {
+          this.isValidMaze = true;
+        }
+      } else {
+        if (this.maze[gameOptions.mazeEndY + 1][gameOptions.mazeEndX] !== 1) {
+          this.isValidMaze = true;
+        }
+      }
+    }
 
     this.mazeGraphicsNew = [];
 
@@ -50,6 +74,13 @@ export default class PlayScene extends Phaser.Scene {
         }
       }
     }
+
+    // replace the wall at the end of the maze with a floor
+    this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX] = { floor: this.mazeFloorTiles.create(
+      gameOptions.mazeEndX * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      gameOptions.mazeEndY * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      'spritesheet', Math.random() > 0.5 ? 'floor_stone_cracked' : 'floor_stone')
+      .setPipeline('Light2D').setScale(1.05) };
 
     // spawn fireplaces and torches
     // they have a certain % chance of spawning
@@ -92,6 +123,12 @@ export default class PlayScene extends Phaser.Scene {
     );
     this.easystar.calculate();
 
+    // add the gift at the end of the maze
+    this.gift = this.physics.add.sprite(
+      gameOptions.mazeEndX * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      gameOptions.mazeEndY * gameOptions.tileSize + (gameOptions.tileSize / 2),
+      'gift').setPipeline('Light2D');
+
     // Player stuff
     // centers the player on the current tile
     this.playerX =
@@ -115,9 +152,10 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     // checks if the player has reached the end of the maze
+
     this.physics.add.overlap(
       this.player,
-      this.mazeGraphicsNew[gameOptions.mazeEndY][gameOptions.mazeEndX].floor,
+      this.gift,
       this.clearLevel,
       null,
       this
@@ -205,12 +243,23 @@ export default class PlayScene extends Phaser.Scene {
   clearLevel () {
     this.game.global.score++;
     alert(`Good job, you cleared this maze! 🥳 Your score is: ${this.game.global.score}`); // should use some Phaser implementation of this
-    gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
-    gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
+    // prevent the maze width and height from being even
+    // even sizes mess with the maze generator
+    if ((gameOptions.mazeWidth + gameOptions.mazeSizeIncrement) % 2 === 0) {
+      gameOptions.mazeWidth += gameOptions.mazeSizeIncrement + 1;
+      gameOptions.mazeHeight += gameOptions.mazeSizeIncrement + 1;
+    } else {
+      gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
+      gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
+    }
+
     gameOptions.mazeEndX = gameOptions.mazeWidth - 2;
     gameOptions.mazeEndY = gameOptions.mazeHeight - 2;
     gameOptions.fireplaceSpawnChance *= gameOptions.warmingElementsDecrement;
     gameOptions.torchesSpawnChance *= gameOptions.warmingElementsDecrement;
+
+    this.generateEnd();
+
     this.scene.start('play');
   }
 
@@ -229,6 +278,18 @@ export default class PlayScene extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+  }
+
+  generateEnd () {
+    // generate a random end for the maze
+    // close to the edges
+    if (Math.random() > 0.5) {
+      gameOptions.mazeEndX = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeWidth));
+      gameOptions.mazeEndY = Math.random() > 0.5 ? gameOptions.mazeHeight - 1 : 0;
+    } else {
+      gameOptions.mazeEndX = Math.random() > 0.5 ? gameOptions.mazeWidth - 1 : 0;
+      gameOptions.mazeEndY = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeHeight));
+    }
   }
 
   update () {
@@ -254,26 +315,35 @@ export default class PlayScene extends Phaser.Scene {
       this.player.setVelocityX(0);
     }
 
-    // flicker light
-    this.lightSinAngle += (Math.random() > 0.5 ? -1 : 1) * this.getRandomArbitrary(0, 0.2);
-    if (this.lightSinAngle > 110) {
-      this.lightSinAngle = 110;
-    } else if (this.lightSinAngle < 70) {
-      this.lightSinAngle = 70;
+    // delta timing
+    let currentTime = new Date().getTime();
+    this.deltaUpdate += (currentTime - this.lastTime) / gameOptions.updateInterval;
+    this.lastTime = currentTime;
+
+    while (this.deltaUpdate >= 1) {
+      this.deltaUpdate--;
+
+      // flicker light
+      this.lightSinAngle += (Math.random() > 0.5 ? -1 : 1) * this.getRandomArbitrary(0, 0.2);
+      if (this.lightSinAngle > 110) {
+        this.lightSinAngle = 110;
+      } else if (this.lightSinAngle < 70) {
+        this.lightSinAngle = 70;
+      }
+      this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * 130);
+
+      this.playerLight.x = this.player.x;
+      this.playerLight.y = this.player.y;
+
+      let worldView = this.cameras.main.worldView;
+      this.playerHB.setPosition(worldView.x, worldView.y);
+
+      // update the players health
+      this.hbIncrement -= gameOptions.damagePerUpdate;
+      this.playerHB.change(this.hbIncrement);
+      this.hbIncrement = 0;
+      this.playerHB.draw();
     }
-    this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * 130);
-
-    this.playerLight.x = this.player.x;
-    this.playerLight.y = this.player.y;
-
-    let worldView = this.cameras.main.worldView;
-    this.playerHB.setPosition(worldView.x, worldView.y);
-
-    // update the players health
-    this.hbIncrement -= gameOptions.damagePerUpdate;
-    this.playerHB.change(this.hbIncrement);
-    this.hbIncrement = 0;
-    this.playerHB.draw();
 
     // check if the player has died
     if (this.playerHB.value <= 0) {

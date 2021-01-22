@@ -8,9 +8,10 @@ export default {
   mazeStartingY: 1,
   mazeEndX: 31 - 2, // this should read the value from gameOptions.mazeWidth
   mazeEndY: 31 - 2,
-  mazeSizeIncrement: 10,
+  mazeSizeIncrement: 4,
   damagePerUpdate: 0.025,
   fireplaceSpawnChance: 0.01,
   torchesSpawnChance: 0.02,
-  warmingElementsDecrement: 0.90
+  warmingElementsDecrement: 0.90,
+  updateInterval: (1 / 60) * 1000
 };
