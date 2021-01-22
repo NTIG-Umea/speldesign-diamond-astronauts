@@ -322,35 +322,15 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   drawPath () {
-    let i = 0;
-    this.time.addEvent({
-      delay: 0,
-      callback: function () {
-        if (i < this.path.length) {
-          this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
-          i++;
-        } else {
-          // this.scene.start("PlayGame");
-        }
-      },
-      callbackScope: this,
-      loop: true
-    });
+    for (let i = 0; i < this.path.length; i++) {
+      this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', 'floor_stone_mossy').setPipeline('Light2D');
+    }
   }
 
   removePath () {
-    let i = 0;
-    this.time.addEvent({
-      delay: 0,
-      callback: function () {
-        if (i < this.path.length) {
-          this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', Math.random() < 0.5 ? 'floor_stone_cracked' : 'floor_stone').setPipeline('Light2D');
-          i++;
-        }
-      },
-      callbackScope: this,
-      loop: true
-    });
+    for (let i = 0; i < this.path.length; i++) {
+      this.mazeGraphicsNew[this.path[i].y][this.path[i].x].floor.setTexture('spritesheet', Math.random() < 0.5 ? 'floor_stone_cracked' : 'floor_stone').setPipeline('Light2D');
+    }
   }
 
   generateEnd () {
