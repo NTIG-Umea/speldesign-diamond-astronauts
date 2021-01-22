@@ -88,6 +88,8 @@ export default class PlayScene extends Phaser.Scene {
     this.fireplaces = this.physics.add.staticGroup();
     this.torches = this.physics.add.staticGroup();
 
+    this.gingerbreads = [];
+
     for (let y = 0; y < gameOptions.mazeHeight; y++) {
       for (let x = 0; x < gameOptions.mazeWidth; x++) {
         if (this.mazeGraphicsNew[y][x].hasOwnProperty('floor')) {
@@ -96,6 +98,17 @@ export default class PlayScene extends Phaser.Scene {
               x * gameOptions.tileSize + (gameOptions.tileSize / 2),
               y * gameOptions.tileSize + (gameOptions.tileSize / 2),
               'spritesheet', 'fireplace_frame_1').setSize(4 * gameOptions.tileSize, 4 * gameOptions.tileSize).setPipeline('Light2D');
+          }
+
+          // spawn gingerbreads
+          if (Math.random() < gameOptions.gingerbreadSpawnChance) {
+            let gingerbreadCoordinate = this.getRandomMazeCoordinate();
+            let currentGingerbread = this.physics.add.sprite(
+              gingerbreadCoordinate.x * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+              gingerbreadCoordinate.y * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+              'gingerbread').setPipeline('Light2D');
+            currentGingerbread.startTime = Infinity;
+            this.gingerbreads.push(currentGingerbread);
           }
         } else if (this.mazeGraphicsNew[y][x].hasOwnProperty('halfWall')) {
           if (Math.random() < gameOptions.torchesSpawnChance) {
@@ -120,16 +133,10 @@ export default class PlayScene extends Phaser.Scene {
       'gift').setPipeline('Light2D');
 
     // spawn rudolphs nose powerup
-    let randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
-    let randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
-    while (!this.mazeGraphicsNew[randomY][randomX].hasOwnProperty('floor')) {
-      randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
-      randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
-    }
-
+    this.rudolphsNoseCoordinate = this.getRandomMazeCoordinate();
     this.rudolphsNose = this.physics.add.sprite(
-      randomX * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
-      randomY * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+      this.rudolphsNoseCoordinate.x * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
+      this.rudolphsNoseCoordinate.y * gameOptions.tileSize + ((Math.random() * (gameOptions.tileSize - 8) + 4)),
       'rudolphs_nose').setPipeline('Light2D');
 
     // Player stuff
@@ -163,7 +170,22 @@ export default class PlayScene extends Phaser.Scene {
       this
     );
 
-    // show path out when you pick up the nose
+    // increase speed when player eats cookie
+    for (const currentGingerbread of this.gingerbreads) {
+      this.physics.add.overlap(
+        this.player,
+        currentGingerbread,
+        () => {
+          currentGingerbread.startTime = new Date().getTime();
+          currentGingerbread.destroy(false);
+          gameOptions.playerSpeed *= gameOptions.playerSpeedBuff;
+        },
+        null,
+        this
+      );
+    }
+
+    // show path out when the player picks up the nose
     this.physics.add.overlap(
       this.player,
       this.rudolphsNose,
@@ -173,8 +195,8 @@ export default class PlayScene extends Phaser.Scene {
         this.easystar.findPath(
           gameOptions.mazeEndX,
           gameOptions.mazeEndY,
-          Math.round((this.rudolphsNose.x - (gameOptions.tileSize / 2)) / gameOptions.tileSize),
-          Math.round((this.rudolphsNose.y - (gameOptions.tileSize / 2)) / gameOptions.tileSize),
+          this.rudolphsNoseCoordinate.x,
+          this.rudolphsNoseCoordinate.y,
           function (path) {
             this.drawPath(path);
           }.bind(this)
@@ -325,21 +347,21 @@ export default class PlayScene extends Phaser.Scene {
 
   update () {
     if (this.keys.W.isDown || this.keys.up.isDown) {
-      this.player.setVelocityY(-200);
+      this.player.setVelocityY(-1 * gameOptions.playerSpeed);
       this.player.anims.play('walk_up', true);
     } else if (this.keys.S.isDown || this.keys.down.isDown) {
-      this.player.setVelocityY(200);
+      this.player.setVelocityY(gameOptions.playerSpeed);
       this.player.anims.play('walk_down', true);
     } else {
       this.player.setVelocityY(0);
     }
 
     if (this.keys.D.isDown || this.keys.right.isDown) {
-      this.player.setVelocityX(200);
+      this.player.setVelocityX(gameOptions.playerSpeed);
       this.player.flipX = false;
       this.player.anims.play('walk_sideways', true);
     } else if (this.keys.A.isDown || this.keys.left.isDown) {
-      this.player.setVelocityX(-200);
+      this.player.setVelocityX(-1 * gameOptions.playerSpeed);
       this.player.flipX = true;
       this.player.anims.play('walk_sideways', true);
     } else {
@@ -374,12 +396,29 @@ export default class PlayScene extends Phaser.Scene {
       this.playerHB.change(this.hbIncrement);
       this.hbIncrement = 0;
       this.playerHB.draw();
+
+      for (const currentGingerbread of this.gingerbreads) {
+        if (currentTime - currentGingerbread.startTime >= 10 * 1000) {
+          gameOptions.playerSpeed /= gameOptions.playerSpeedBuff;
+          this.gingerbreads.splice(this.gingerbreads.indexOf(currentGingerbread), 1);
+        }
+      }
     }
 
     // check if the player has died
     if (this.playerHB.value <= 0) {
       this.scene.switch('end');
     }
+  }
+
+  getRandomMazeCoordinate () {
+    let randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
+    let randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
+    while (!this.mazeGraphicsNew[randomY][randomX].hasOwnProperty('floor')) {
+      randomX = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeWidth - 1));
+      randomY = Math.floor(this.getRandomArbitrary(1, gameOptions.mazeHeight - 1));
+    }
+    return { x: randomX, y: randomY };
   }
 
   getRandomArbitrary (min, max) {

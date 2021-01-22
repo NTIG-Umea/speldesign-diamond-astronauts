@@ -15,5 +15,9 @@ export default {
   warmingElementsDecrement: 0.90,
   updateInterval: (1 / 60) * 1000,
   lightRadius: 130,
-  defaultLightRadius: 130
+  defaultLightRadius: 130,
+  playerSpeed: 200,
+  playerDefaultSpeed: 200,
+  playerSpeedBuff: 1.5,
+  gingerbreadSpawnChance: 0.005
 };
