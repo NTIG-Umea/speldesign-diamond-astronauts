@@ -3,12 +3,11 @@ import BootScene from './BootScene';
 import PlayScene from './PlayScene';
 import MenuScene from './MenuScene';
 import EndScene from './EndScene';
-import gameOptions from './gameOptions';
 
 export default {
   type: Phaser.WEBGL,
-  width: gameOptions.mazeWidth * gameOptions.tileSize,
-  height: gameOptions.mazeHeight * gameOptions.tileSize,
+  width: window.innerWidth,
+  height: window.innerHeight,
   backgroundColor: 0xaaaaaa,
   physics: {
     default: 'arcade',
