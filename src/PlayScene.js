@@ -11,6 +11,18 @@ export default class PlayScene extends Phaser.Scene {
     this.hbIncrement = 0;
     this.deltaUpdate = 0;
     this.lastTime = new Date().getTime();
+
+    // generate a random end for the maze
+    // close to the edges
+    if (Math.random() > 0.5) {
+      gameOptions.mazeEndX = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeWidth - 1));
+      gameOptions.mazeEndY = Math.random() > 0.5 ? gameOptions.mazeHeight - 2 : 1;
+    } else {
+      gameOptions.mazeEndX = Math.random() > 0.5 ? gameOptions.mazeWidth - 2 : 1;
+      gameOptions.mazeEndY = Math.floor(this.getRandomArbitrary(3, gameOptions.mazeHeight - 1));
+    }
+
+    console.log(gameOptions.mazeEndX, gameOptions.mazeEndY);
   }
   preload () {
   }
