@@ -207,12 +207,21 @@ export default class PlayScene extends Phaser.Scene {
   clearLevel () {
     this.game.global.score++;
     alert(`Good job, you cleared this maze! 🥳 Your score is: ${this.game.global.score}`); // should use some Phaser implementation of this
-    gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
-    gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
+    // prevent the maze width and height from being even
+    // even sizes mess with the maze generator
+    if ((gameOptions.mazeWidth + gameOptions.mazeSizeIncrement) % 2 === 0) {
+      gameOptions.mazeWidth += gameOptions.mazeSizeIncrement + 1;
+      gameOptions.mazeHeight += gameOptions.mazeSizeIncrement + 1;
+    } else {
+      gameOptions.mazeWidth += gameOptions.mazeSizeIncrement;
+      gameOptions.mazeHeight += gameOptions.mazeSizeIncrement;
+    }
+
     gameOptions.mazeEndX = gameOptions.mazeWidth - 2;
     gameOptions.mazeEndY = gameOptions.mazeHeight - 2;
     gameOptions.fireplaceSpawnChance *= gameOptions.warmingElementsDecrement;
     gameOptions.torchesSpawnChance *= gameOptions.warmingElementsDecrement;
+
     this.scene.start('play');
   }
 
