@@ -16,5 +16,6 @@ export default {
       debug: false
     }
   },
-  scene: [BootScene, MenuScene, PlayScene, EndScene]
+  scene: [BootScene, MenuScene, PlayScene, EndScene],
+  pixelArt: true
 };
