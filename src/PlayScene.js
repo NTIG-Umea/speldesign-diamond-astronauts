@@ -169,6 +169,7 @@ export default class PlayScene extends Phaser.Scene {
       this.rudolphsNose,
       () => {
         this.rudolphsNose.destroy(false);
+
         this.easystar.findPath(
           gameOptions.mazeEndX,
           gameOptions.mazeEndY,
@@ -179,6 +180,11 @@ export default class PlayScene extends Phaser.Scene {
           }.bind(this)
         );
         this.easystar.calculate();
+
+        // this.cameras.main.setZoom(3);
+        this.cameras.main.zoomTo(2, 1500);
+        gameOptions.lightRadius *= 1.5;
+        this.playerLight.setRadius(gameOptions.lightRadius);
       },
       null,
       this
@@ -238,7 +244,7 @@ export default class PlayScene extends Phaser.Scene {
 
     this.keys = this.input.keyboard.addKeys('W, D, S, A, up, right, down, left');
 
-    this.playerLight = this.lights.addLight(this.player.x, this.player.y, 130, 0xffffff, 3).setScrollFactor(1, 1);
+    this.playerLight = this.lights.addLight(this.player.x, this.player.y, gameOptions.lightRadius, 0xffffff, 3).setScrollFactor(1, 1);
     this.lights.enable();
     this.lights.setAmbientColor(0x000000);
 
@@ -280,6 +286,8 @@ export default class PlayScene extends Phaser.Scene {
     gameOptions.mazeEndY = gameOptions.mazeHeight - 2;
     gameOptions.fireplaceSpawnChance *= gameOptions.warmingElementsDecrement;
     gameOptions.torchesSpawnChance *= gameOptions.warmingElementsDecrement;
+
+    gameOptions.lightRadius = gameOptions.defaultLightRadius;
 
     this.generateEnd();
 
@@ -353,7 +361,7 @@ export default class PlayScene extends Phaser.Scene {
       } else if (this.lightSinAngle < 70) {
         this.lightSinAngle = 70;
       }
-      this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * 130);
+      this.playerLight.setRadius(Math.sin(this.toRadians(this.lightSinAngle)) * gameOptions.lightRadius);
 
       this.playerLight.x = this.player.x;
       this.playerLight.y = this.player.y;
