@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import gameConfig from './gameConfig';
+import Hiscore from './Hiscore';
 
 export default class EndScene extends Phaser.Scene {
   constructor () {
@@ -7,6 +8,10 @@ export default class EndScene extends Phaser.Scene {
   }
 
   create () {
+
+    const hiscore = new Hiscore('https://localhost:1234');
+    hiscore.getScore(3);
+
     this.add.text(gameConfig.width / 2, gameConfig.height / 2, `Game Over\n\n Your score was ${this.game.global.score}\n\nGo to menu to start over\n\n< menu >`, {
       align: 'center',
       fill: 'white',
