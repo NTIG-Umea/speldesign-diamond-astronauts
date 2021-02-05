@@ -8,9 +8,8 @@ export default class EndScene extends Phaser.Scene {
   }
 
   create () {
-
-    const hiscore = new Hiscore('https://localhost:1234');
-    hiscore.getScore(3);
+    const hiscore = new Hiscore('http://localhost:3000');
+    hiscore.postScore(3, this.game.global.score, prompt('Please input your name to save your score, gamer'));
 
     this.add.text(gameConfig.width / 2, gameConfig.height / 2, `Game Over\n\n Your score was ${this.game.global.score}\n\nGo to menu to start over\n\n< menu >`, {
       align: 'center',
